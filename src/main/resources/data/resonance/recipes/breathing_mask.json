@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WTW",
+    "TCT",
+    "   "
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:white_wool"
+    },
+    "T": {
+      "item": "minecraft:string"
+    },
+    "C": {
+      "item": "resonance:carbon_filter"
+    }
+  },
+  "result": {
+    "item": "resonance:breathing_mask",
+    "count": 1
+  }
+}

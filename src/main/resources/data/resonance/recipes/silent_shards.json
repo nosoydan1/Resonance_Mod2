@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SA",
+    "AS"
+  ],
+  "key": {
+    "S": {
+      "item": "resonance:silent_shard"
+    },
+    "A": {
+      "item": "resonance:ashes"
+    }
+  },
+  "result": {
+    "item": "resonance:silent_shards",
+    "count": 1
+  }
+}

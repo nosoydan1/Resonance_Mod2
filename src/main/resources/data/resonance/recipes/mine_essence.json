@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MM",
+    "MM"
+  ],
+  "key": {
+    "M": {
+      "item": "resonance:mine_fragment"
+    }
+  },
+  "result": {
+    "item": "resonance:mine_essence",
+    "count": 1
+  }
+}

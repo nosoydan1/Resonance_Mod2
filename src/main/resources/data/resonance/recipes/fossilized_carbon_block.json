@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FF",
+    "FF"
+  ],
+  "key": {
+    "F": {
+      "item": "resonance:fossilized_carbon"
+    }
+  },
+  "result": {
+    "item": "resonance:fossilized_carbon_block",
+    "count": 1
+  }
+}

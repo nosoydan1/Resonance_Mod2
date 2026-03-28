@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IGI",
+    "GMG",
+    "IGI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "G": {
+      "item": "resonance:meteorite_fragment"
+    },
+    "M": {
+      "item": "minecraft:compass"
+    }
+  },
+  "result": {
+    "item": "resonance:locating_compass",
+    "count": 1
+  }
+}

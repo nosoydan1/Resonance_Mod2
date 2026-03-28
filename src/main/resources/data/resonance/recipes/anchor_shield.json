@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CPC",
+    "CSC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "resonance:compact_crystal"
+    },
+    "P": {
+      "item": "resonance:charged_petrified_core"
+    },
+    "S": {
+      "item": "minecraft:shield"
+    }
+  },
+  "result": {
+    "item": "resonance:anchor_shield",
+    "count": 1
+  }
+}

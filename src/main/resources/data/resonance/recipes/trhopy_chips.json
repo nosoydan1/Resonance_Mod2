@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    " S ",
+    "   "
+  ],
+  "key": {
+    "C": {
+      "item": "resonance:chips_statue"
+    },
+    "S": {
+      "item": "minecraft:oak_slab"
+    }
+  },
+  "result": {
+    "item": "resonance:trophy_chips",
+    "count": 1
+  }
+}

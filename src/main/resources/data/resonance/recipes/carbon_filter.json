@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " F ",
+    "FAF",
+    " F "
+  ],
+  "key": {
+    "F": {
+      "item": "resonance:fossilized_carbon"
+    },
+    "A": {
+      "item": "resonance:ashes"
+    }
+  },
+  "result": {
+    "item": "resonance:carbon_filter",
+    "count": 1
+  }
+}

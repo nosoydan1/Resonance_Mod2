@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    " A ",
+    "   "
+  ],
+  "key": {
+    "S": {
+      "item": "resonance:syringe_gun"
+    },
+    "A": {
+      "item": "resonance:antidote"
+    }
+  },
+  "result": {
+    "item": "resonance:dissonant_injection",
+    "count": 1
+  }
+}

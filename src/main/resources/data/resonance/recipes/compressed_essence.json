@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MR",
+    "RM"
+  ],
+  "key": {
+    "M": {
+      "item": "resonance:mine_essence"
+    },
+    "R": {
+      "item": "resonance:ralite_essence"
+    }
+  },
+  "result": {
+    "item": "resonance:compressed_essence",
+    "count": 2
+  }
+}

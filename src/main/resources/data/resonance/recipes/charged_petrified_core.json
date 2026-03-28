@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CPC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "resonance:compact_crystal"
+    },
+    "P": {
+      "item": "resonance:petrified_core"
+    }
+  },
+  "result": {
+    "item": "resonance:charged_petrified_core",
+    "count": 1
+  }
+}

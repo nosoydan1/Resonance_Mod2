@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "resonance:mineral_ore"
+  },
+  "result": "resonance:mineral_crystal",
+  "experience": 0.7,
+  "cookingtime": 200
+}

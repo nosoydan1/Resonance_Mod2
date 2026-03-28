@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MMM",
+    "MMM",
+    "MMM"
+  ],
+  "key": {
+    "M": {
+      "item": "resonance:mineral_crystal"
+    }
+  },
+  "result": {
+    "item": "resonance:compact_crystal",
+    "count": 1
+  }
+}

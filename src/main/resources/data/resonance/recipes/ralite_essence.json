@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RR",
+    "RR"
+  ],
+  "key": {
+    "R": {
+      "item": "resonance:ralite_fragment"
+    }
+  },
+  "result": {
+    "item": "resonance:ralite_essence",
+    "count": 1
+  }
+}

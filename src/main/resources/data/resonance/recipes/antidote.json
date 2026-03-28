@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "B  ",
+    "S  ",
+    " M "
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:glass_bottle"
+    },
+    "S": {
+      "item": "resonance:silent_shard"
+    },
+    "M": {
+      "item": "resonance:mineral_crystal"
+    }
+  },
+  "result": {
+    "item": "resonance:antidote",
+    "count": 1
+  }
+}
