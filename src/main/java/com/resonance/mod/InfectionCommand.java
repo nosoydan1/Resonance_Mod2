@@ -134,6 +134,64 @@ public class InfectionCommand {
                                     ), false);
                                     return 1;
                                 }))
+                        .then(Commands.literal("colossus")
+                                .then(Commands.literal("status")
+                                        .executes(ctx -> {
+                                            CommandSourceStack source = ctx.getSource();
+                                            ServerLevel level = source.getLevel();
+
+                                            var colossusList = level.getEntitiesOfClass(
+                                                    com.resonance.mod.entity.MineralColossusEntity.class,
+                                                    new net.minecraft.world.phys.AABB(
+                                                            level.getWorldBorder().getMinX(), level.getMinBuildHeight(),
+                                                            level.getWorldBorder().getMinZ(),
+                                                            level.getWorldBorder().getMaxX(), level.getMaxBuildHeight(),
+                                                            level.getWorldBorder().getMaxZ()
+                                                    ));
+
+                                            if (colossusList.isEmpty()) {
+                                                source.sendSuccess(() -> Component.literal(
+                                                        "§cNo hay Coloso activo en el mundo."), false);
+                                            } else {
+                                                var colossus = colossusList.get(0);
+                                                float hp = colossus.getHealth();
+                                                float maxHp = (float) colossus.getAttributeValue(
+                                                        net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);
+                                                int phase = colossus.getCombatPhase();
+                                                source.sendSuccess(() -> Component.literal(
+                                                        "§5Coloso — Fase: " + phase +
+                                                                " | HP: " + (int)hp + "/" + (int)maxHp +
+                                                                " (" + (int)(hp/maxHp*100) + "%)"), false);
+                                            }
+                                            return 1;
+                                        }))
+                                .then(Commands.literal("setphase")
+                                        .then(Commands.argument("phase",
+                                                        IntegerArgumentType.integer(1, 3))
+                                                .executes(ctx -> {
+                                                    int targetPhase = IntegerArgumentType.getInteger(ctx, "phase");
+                                                    CommandSourceStack source = ctx.getSource();
+                                                    ServerLevel level = source.getLevel();
+
+                                                    var colossusList = level.getEntitiesOfClass(
+                                                            com.resonance.mod.entity.MineralColossusEntity.class,
+                                                            new net.minecraft.world.phys.AABB(
+                                                                    level.getWorldBorder().getMinX(), level.getMinBuildHeight(),
+                                                                    level.getWorldBorder().getMinZ(),
+                                                                    level.getWorldBorder().getMaxX(), level.getMaxBuildHeight(),
+                                                                    level.getWorldBorder().getMaxZ()
+                                                            ));
+
+                                                    if (colossusList.isEmpty()) {
+                                                        source.sendSuccess(() -> Component.literal(
+                                                                "§cNo hay Coloso activo."), false);
+                                                    } else {
+                                                        colossusList.get(0).setCombatPhase(targetPhase);
+                                                        source.sendSuccess(() -> Component.literal(
+                                                                "§5Fase del Coloso cambiada a " + targetPhase), false);
+                                                    }
+                                                    return 1;
+                                                }))))
         );
     }
 

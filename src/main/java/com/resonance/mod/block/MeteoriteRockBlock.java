@@ -52,6 +52,12 @@ public class MeteoriteRockBlock extends Block {
         Block.popResource(level, pos,
                 new ItemStack(com.resonance.mod.registry.ModItems.METEORITE_FRAGMENT.get(), 1));
 
+        // Drop del Códice Nivel 1 — solo la primera vez (cuando no hay núcleo aún)
+        if (InfectionData.get(level).getNucleus() == null) {
+            Block.popResource(level, pos,
+                    new ItemStack(com.resonance.mod.registry.ModItems.CODEX_LEVEL_1.get(), 1));
+        }
+
         InfectionData data = InfectionData.get(level);
 
         // Solo al picar el PRIMER bloque del meteorito
@@ -79,6 +85,7 @@ public class MeteoriteRockBlock extends Block {
             player.sendSystemMessage(Component.literal(
                     "§8[La infección ha comenzado...]"
             ));
+
         }
 
         // Marcar al jugador

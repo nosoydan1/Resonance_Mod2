@@ -56,21 +56,34 @@ public class AshFoodItem extends Item {
         ItemStack result = super.finishUsingItem(stack, level, entity);
 
         if (entity instanceof Player player && !level.isClientSide()) {
-            // FIX: operar con float directamente, sin cast a int
             float currentResonance = ResonanceData.getResonance(player);
-            float newResonance = Math.max(0f, currentResonance - resonanceReduction);
+
+            // Si hay un Damping Mechanism activo cerca, la reducción es mayor
+            boolean dampingActive = com.resonance.mod.block.DampingMechanismBlock
+                    .playerHasDampingProtection(level, player.blockPosition());
+
+            float reduction = resonanceReduction;
+            if (dampingActive) {
+                reduction *= 1.75f; // 75% más efectivo con Damping activo
+            }
+
+            float newResonance = Math.max(0f, currentResonance - reduction);
             ResonanceData.setResonance(player, newResonance);
 
             if (isAcceleratedReduction) {
-                // Ash Pie: GDD §6.5 — "Reduce la Resonancia un 20% más rápido durante 4 segundos"
-                // Se aplica una reducción adicional del 20% de la Resonancia actual inmediatamente
+                // Ash Pie: reducción adicional del 20% de la Resonancia actual
                 float bonusReduction = ResonanceData.getResonance(player) * 0.20f;
+                if (dampingActive) bonusReduction *= 1.75f;
                 ResonanceData.reduceResonance(player, bonusReduction);
                 player.sendSystemMessage(net.minecraft.network.chat.Component.literal(
-                        "§7El pie de ceniza acelera la reducción de resonancia."));
+                        dampingActive
+                                ? "§aEl Damping amplifica el efecto del pie de ceniza."
+                                : "§7El pie de ceniza acelera la reducción de resonancia."));
             } else {
                 player.sendSystemMessage(net.minecraft.network.chat.Component.literal(
-                        "§7Las cenizas reducen tu resonancia en " + resonanceReduction + " puntos."));
+                        dampingActive
+                                ? "§aEl Damping amplifica el efecto: -" + (int)reduction + " pts de resonancia."
+                                : "§7Las cenizas reducen tu resonancia en " + (int)reduction + " puntos."));
             }
         }
 

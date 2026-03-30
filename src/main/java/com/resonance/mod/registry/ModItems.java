@@ -1,5 +1,7 @@
 package com.resonance.mod.registry;
 
+import com.resonance.mod.item.AntidoteItem;
+import com.resonance.mod.item.SilentShardsItem;
 import com.resonance.mod.entity.MineralParticlesProjectileEntity;
 import com.resonance.mod.ResonanceMod;
 import com.resonance.mod.item.BreathingMaskItem;
@@ -88,7 +90,8 @@ public class ModItems {
             ITEMS.register("silent_shard", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> SILENT_SHARDS =
-            ITEMS.register("silent_shards", () -> new Item(new Item.Properties()));
+            ITEMS.register("silent_shards",
+                    () -> new SilentShardsItem(new Item.Properties().stacksTo(16)));
 
     public static final RegistryObject<Item> CHARGED_PETRIFIED_CORE =
             ITEMS.register("charged_petrified_core", () -> new Item(new Item.Properties()));
@@ -104,7 +107,8 @@ public class ModItems {
                     () -> new SyringeGunItem(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> ANTIDOTE =
-            ITEMS.register("antidote", () -> new Item(new Item.Properties()));
+            ITEMS.register("antidote",
+                    () -> new AntidoteItem(new Item.Properties().stacksTo(16)));
 
     // -------------------------------------------------------------------------
     // Consumibles
@@ -208,7 +212,8 @@ public class ModItems {
 
     public static final RegistryObject<Item> TROPHY_CHIPS =
             ITEMS.register("trophy_chips",
-                    () -> new Item(new Item.Properties().stacksTo(1)));
+                    () -> new BlockItem(ModBlocks.TROPHY_CHIPS.get(),
+                            new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> DAMPING_MECHANISM =
             ITEMS.register("damping_mechanism",

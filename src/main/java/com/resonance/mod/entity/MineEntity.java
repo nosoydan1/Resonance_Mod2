@@ -15,6 +15,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import com.resonance.mod.MobInfectionHandler;
 
 public class MineEntity extends PathfinderMob {
 
@@ -42,7 +43,8 @@ public class MineEntity extends PathfinderMob {
                 this, Animal.class, true,
                 e -> !(e instanceof ChipsEntity) && !(e instanceof MineEntity)
                         && !(e instanceof RaliteEntity) && !(e instanceof AshenKnightEntity)
-                        && !(e instanceof MineralGuardianEntity)));
+                        && !(e instanceof MineralGuardianEntity)
+                        && !MobInfectionHandler.isInfected(e)));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(
                 this, Player.class, true));
     }

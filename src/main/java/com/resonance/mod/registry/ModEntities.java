@@ -58,7 +58,11 @@ public class ModEntities {
 
     public static final RegistryObject<EntityType<MineralParticlesProjectileEntity>> MINERAL_PARTICLES_PROJECTILE =
             ENTITIES.register("mineral_particles_projectile",
-                    () -> EntityType.Builder.<MineralParticlesProjectileEntity>of(MineralParticlesProjectileEntity::new, MobCategory.MISC)
+                    () -> EntityType.Builder.<MineralParticlesProjectileEntity>of(
+                                    MineralParticlesProjectileEntity::new, MobCategory.MISC)
                             .sized(0.25f, 0.25f)
-                            .build(new ResourceLocation(ResonanceMod.MODID, "mineral_particles_projectile").toString()));
+                            .clientTrackingRange(4)
+                            .updateInterval(10)
+                            .build(new ResourceLocation(ResonanceMod.MODID,
+                                    "mineral_particles_projectile").toString()));
 }

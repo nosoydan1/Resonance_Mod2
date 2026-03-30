@@ -123,6 +123,8 @@ public class ResonanceMod {
             event.registerEntityRenderer(ModEntities.ASHEN_KNIGHT.get(), AshenKnightRenderer::new);
             event.registerEntityRenderer(ModEntities.MINERAL_GUARDIAN.get(), MineralGuardianRenderer::new);
             event.registerEntityRenderer(ModEntities.MINERAL_COLOSSUS.get(), MineralColossusRenderer::new);
+            event.registerEntityRenderer(ModEntities.MINERAL_PARTICLES_PROJECTILE.get(),
+                    net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
         }
     }
 }

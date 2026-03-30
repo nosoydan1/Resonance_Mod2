@@ -1,22 +1,51 @@
 package com.resonance.mod.entity;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.model.IronGolemModel;
-import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Mob;
-import com.resonance.mod.ResonanceMod;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-// Usamos Mob como parámetro del modelo para saltarnos la restricción del Iron Golem
-public class MineralColossusRenderer extends MobRenderer<MineralColossusEntity, IronGolemModel<Mob>> {
+/**
+ * Renderer temporal del Coloso usando un bloque como placeholder.
+ * Se reemplazará con modelo propio cuando haya texturas.
+ */
+@OnlyIn(Dist.CLIENT)
+public class MineralColossusRenderer extends EntityRenderer<MineralColossusEntity> {
+
     public MineralColossusRenderer(EntityRendererProvider.Context context) {
-        // El casting (IronGolemModel) le dice a Java: "Yo sé lo que hago, úsalo"
-        super(context, new IronGolemModel(context.bakeLayer(ModelLayers.IRON_GOLEM)), 0.7F);
+        super(context);
+        this.shadowRadius = 1.5f;
     }
 
     @Override
     public ResourceLocation getTextureLocation(MineralColossusEntity entity) {
-        return new ResourceLocation(ResonanceMod.MODID, "textures/entity/mineral_colossus.png");
+        return new ResourceLocation("minecraft", "textures/block/deepslate_bricks.png");
+    }
+
+    @Override
+    public void render(MineralColossusEntity entity, float entityYaw, float partialTick,
+                       PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        poseStack.pushPose();
+
+        // Grande y pesado — 3x4 bloques de escala
+        poseStack.translate(-1.5, 0.0, -1.5);
+        poseStack.scale(3.0f, 4.0f, 3.0f);
+
+        BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+        dispatcher.renderSingleBlock(
+                Blocks.DEEPSLATE_BRICKS.defaultBlockState(),
+                poseStack, bufferSource, packedLight,
+                OverlayTexture.NO_OVERLAY
+        );
+
+        poseStack.popPose();
+        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 }

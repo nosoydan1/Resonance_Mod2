@@ -20,6 +20,7 @@ import com.resonance.mod.entity.AshenKnightEntity;
 import com.resonance.mod.entity.ChipsEntity;
 import com.resonance.mod.entity.MineEntity;
 import com.resonance.mod.entity.MineralGuardianEntity;
+import com.resonance.mod.MobInfectionHandler;
 
 public class RaliteEntity extends PathfinderMob {
 
@@ -47,7 +48,8 @@ public class RaliteEntity extends PathfinderMob {
                 this, net.minecraft.world.entity.LivingEntity.class, true,
                 e -> !(e instanceof RaliteEntity) && !(e instanceof MineEntity)
                         && !(e instanceof ChipsEntity) && !(e instanceof AshenKnightEntity)
-                        && !(e instanceof MineralGuardianEntity)));
+                        && !(e instanceof MineralGuardianEntity)
+                        && !MobInfectionHandler.isInfected(e)));
     }
 
     @Override

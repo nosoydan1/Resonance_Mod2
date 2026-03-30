@@ -51,4 +51,15 @@ public class ModBlocks {
     public static final RegistryObject<Block> DAMPING_MECHANISM =
             BLOCKS.register("damping_mechanism",
                     () -> new DampingMechanismBlock());
+
+    // Trofeo de Chips — bloque decorativo colocable
+    public static final RegistryObject<Block> TROPHY_CHIPS =
+            BLOCKS.register("trophy_chips",
+                    () -> new net.minecraft.world.level.block.Block(
+                            net.minecraft.world.level.block.state.BlockBehaviour.Properties.of()
+                                    .mapColor(net.minecraft.world.level.material.MapColor.STONE)
+                                    .strength(0.5f, 1.0f)
+                                    .sound(net.minecraft.world.level.block.SoundType.STONE)
+                                    .noOcclusion()
+                    ));
 }

@@ -196,7 +196,7 @@ public class MeteoriteEventHandler {
         }
 
         // Generar esfera de meteorito (radio más pequeño)
-        generateMeteoriteSphere(level, center, 2);
+        generateMeteoriteSphere(level, center, 3);
 
         // Sonido de impacto más dramático
         level.playSound(null, center, SoundEvents.GENERIC_EXPLODE,
@@ -256,20 +256,63 @@ public class MeteoriteEventHandler {
     }
 
     public static void generateMeteoriteSphere(ServerLevel level, BlockPos center, int radius) {
+        Random random = new Random();
+
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
                 for (int z = -radius; z <= radius; z++) {
                     double distance = Math.sqrt(x*x + y*y + z*z);
-                    if (distance <= radius) {
+
+                    // Deformación: añadir ruido a la distancia para que no sea esfera perfecta
+                    double noise = (random.nextDouble() - 0.5) * 0.8;
+                    double deformedRadius = radius + noise;
+
+                    if (distance <= deformedRadius) {
                         BlockPos pos = center.offset(x, y, z);
                         BlockState current = level.getBlockState(pos);
-                        if (current.getBlock() != Blocks.BEDROCK) {
+
+                        if (current.getBlock() == Blocks.BEDROCK) continue;
+
+                        // Centro sólido, bordes más irregulares
+                        if (distance <= radius * 0.6) {
+                            // Núcleo siempre sólido
                             level.setBlockAndUpdate(pos,
                                     ModBlocks.METEORITE_ROCK.get().defaultBlockState());
+                        } else {
+                            // Bordes: 70% meteorito, 30% aire para crear forma irregular
+                            if (random.nextFloat() < 0.70f) {
+                                level.setBlockAndUpdate(pos,
+                                        ModBlocks.METEORITE_ROCK.get().defaultBlockState());
+                            } else {
+                                // Dejar el bloque original o aire
+                                if (!current.isAir()) {
+                                    level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+
+        // Fragmentos adicionales esparcidos alrededor del impacto
+        int extraFragments = 8 + random.nextInt(6);
+        for (int i = 0; i < extraFragments; i++) {
+            double angle = random.nextDouble() * Math.PI * 2;
+            int dist = radius + 1 + random.nextInt(3);
+            int dx = (int)(Math.cos(angle) * dist);
+            int dz = (int)(Math.sin(angle) * dist);
+            int dy = random.nextInt(3) - 1;
+
+            BlockPos fragPos = center.offset(dx, dy, dz);
+            BlockState fragCurrent = level.getBlockState(fragPos);
+
+            if (!fragCurrent.isAir() && fragCurrent.getBlock() != Blocks.BEDROCK) {
+                level.setBlockAndUpdate(fragPos,
+                        ModBlocks.METEORITE_ROCK.get().defaultBlockState());
+            }
+
+        }
     }
 }
+
