@@ -115,6 +115,27 @@ public class CorruptedMineralBlock extends Block {
                 || block == Blocks.RED_SAND
                 || block == Blocks.SANDSTONE
                 || block == Blocks.RED_SANDSTONE) return true;
+        // Terracota y variantes
+        if (block == Blocks.TERRACOTTA
+                || block == Blocks.WHITE_TERRACOTTA
+                || block == Blocks.ORANGE_TERRACOTTA
+                || block == Blocks.MAGENTA_TERRACOTTA
+                || block == Blocks.LIGHT_BLUE_TERRACOTTA
+                || block == Blocks.YELLOW_TERRACOTTA
+                || block == Blocks.LIME_TERRACOTTA
+                || block == Blocks.PINK_TERRACOTTA
+                || block == Blocks.GRAY_TERRACOTTA
+                || block == Blocks.LIGHT_GRAY_TERRACOTTA
+                || block == Blocks.CYAN_TERRACOTTA
+                || block == Blocks.PURPLE_TERRACOTTA
+                || block == Blocks.BLUE_TERRACOTTA
+                || block == Blocks.BROWN_TERRACOTTA
+                || block == Blocks.GREEN_TERRACOTTA
+                || block == Blocks.RED_TERRACOTTA
+                || block == Blocks.BLACK_TERRACOTTA) return true;
+
+// Arcilla
+        if (block == Blocks.CLAY) return true;
 
         // Hojas de todos los árboles
         if (block == Blocks.OAK_LEAVES

@@ -5,8 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -48,7 +46,8 @@ public class MineralParticlesVialHandler {
         if (activeTrails.isEmpty()) return;
 
         event.getServer().getAllLevels().forEach(level -> {
-            if (!(level instanceof ServerLevel serverLevel)) return;
+            // ✅ level ya es ServerLevel, no necesita instanceof
+            ServerLevel serverLevel = level;
 
             Iterator<ActiveTrail> it = activeTrails.iterator();
             while (it.hasNext()) {

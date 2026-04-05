@@ -46,9 +46,17 @@ public class MobSpawnHandler {
         int phase = data.getPhase();
 
         // -------------------------------------------------------------------------
+        // Fase 6: congelar spawns normales y gestionar el Coloso
+        // -------------------------------------------------------------------------
+        if (phase >= 6) {
+            handlePhase6(level, data);
+            return;
+        }
+
+        // -------------------------------------------------------------------------
         // Fases 1–5: spawn normal
         // -------------------------------------------------------------------------
-        spawnTickAccumulator++;  //
+        spawnTickAccumulator++;
 
         int spawnInterval = switch (phase) {
             case 0, 1 -> BASE_SPAWN_INTERVAL * 2;
@@ -81,33 +89,6 @@ public class MobSpawnHandler {
     // -------------------------------------------------------------------------
     // Lógica de fase 6
     // -------------------------------------------------------------------------
-    private static void handlePhase6(ServerLevel level, InfectionData data) {
-        // Si el Coloso ya existe en el mundo, no hacer nada
-        if (colossusAlive(level)) return;
-
-        if (!colossusSpawned) {
-            // Primera vez que entramos en fase 6: iniciar countdown
-            if (colossusSpawnCountdown < 0) {
-                colossusSpawnCountdown = COLOSSUS_SPAWN_DELAY;
-
-                // Avisar a todos los jugadores
-                level.players().forEach(p -> {
-                    p.sendSystemMessage(Component.literal(
-                            "§4§l[EL NÚCLEO HA COMPLETADO SU FORMA. EL COLOSO DESPIERTA...]"));
-                    p.sendSystemMessage(Component.literal(
-                            "§c[Tienes 30 segundos para prepararte]"));
-                });
-            }
-
-            colossusSpawnCountdown--;
-
-            if (colossusSpawnCountdown <= 0) {
-                spawnColossus(level, data);
-                colossusSpawned = true;
-                colossusSpawnCountdown = -1;
-            }
-        }
-    }
 
     private static void spawnColossus(ServerLevel level, InfectionData data) {
         BlockPos nucleus = data.getNucleus();

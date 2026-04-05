@@ -20,29 +20,19 @@ public class PlayerRespawnHandler {
     private static final String KEY_MARKED = "ResonanceMarked";
 
     @SubscribeEvent
-    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        Player original = event.getOriginalPlayer();
+    public static void onPlayerClone(PlayerEvent.Clone event) {
+        Player original = event.getOriginal();
         Player newPlayer = event.getEntity();
 
         CompoundTag oldData = original.getPersistentData();
         CompoundTag newData = newPlayer.getPersistentData();
 
-        // Copiar marcado y resonancia al jugador respawneado
+        // Copiar marcado (si quieres que se mantenga)
         if (oldData.contains(KEY_MARKED)) {
             newData.putBoolean(KEY_MARKED, oldData.getBoolean(KEY_MARKED));
         }
-        if (oldData.contains(KEY_RESONANCE)) {
-            // Al morir la resonancia baja pero no se pierde el marcado
-            float resonance = oldData.getFloat(KEY_RESONANCE);
-            // Penalización por muerte: reduce 20% de la resonancia actual
-            float penalty = resonance * 0.20f;
-            newData.putFloat(KEY_RESONANCE, Math.max(0f, resonance - penalty));
-        }
-    }
 
-    @SubscribeEvent
-    public static void onPlayerChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        // Los datos persisten al cambiar dimensión — no necesita acción
-        // pero lo dejamos como hook para futuras dimensiones infectadas
+        // Reiniciar resonancia a 0 al morir
+        newData.putFloat(KEY_RESONANCE, 0f);
     }
 }

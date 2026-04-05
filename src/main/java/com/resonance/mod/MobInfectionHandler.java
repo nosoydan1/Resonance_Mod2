@@ -117,6 +117,9 @@ public class MobInfectionHandler {
         // FIX: nunca infectar mobs del mod
         if (isModMob(entity)) return false;
         if (entity instanceof net.minecraft.world.entity.monster.Shulker) return false;
+        // Aldeanos: su lógica interna de sueño/trabajo causa crashes al infectarlos
+        if (entity instanceof net.minecraft.world.entity.npc.Villager) return false;
+        if (entity instanceof net.minecraft.world.entity.npc.WanderingTrader) return false;
 
         // Bosses con resistencia 75%
         if (entity instanceof WitherBoss
