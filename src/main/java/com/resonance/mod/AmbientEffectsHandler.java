@@ -160,7 +160,7 @@ public class AmbientEffectsHandler {
             event.setCanceled(true);
         }
 
-        @@SubscribeEvent
+        @SubscribeEvent
         public static void onClientTick(TickEvent.ClientTickEvent event) {
             if (event.phase != TickEvent.Phase.END) return;
 

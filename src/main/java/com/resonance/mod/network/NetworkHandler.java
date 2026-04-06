@@ -1,7 +1,8 @@
 package com.resonance.mod.network;
-import com.resonance.mod.ClientInfectionData;
+
 import com.resonance.mod.ResonanceMod;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -20,6 +21,7 @@ public class NetworkHandler {
     private static int packetId = 0;
 
     public static void register() {
+        // Paquete de sincronización de resonancia
         CHANNEL.registerMessage(
                 packetId++,
                 ResonanceSyncPacket.class,
@@ -27,6 +29,8 @@ public class NetworkHandler {
                 ResonanceSyncPacket::decode,
                 ResonanceSyncPacket::handle
         );
+
+        // Paquete de sincronización de infección
         CHANNEL.registerMessage(
                 packetId++,
                 InfectionSyncPacket.class,
@@ -34,42 +38,22 @@ public class NetworkHandler {
                 InfectionSyncPacket::decode,
                 InfectionSyncPacket::handle
         );
-    }
 
-    public static void sendToClient(ResonanceSyncPacket packet, net.minecraft.server.level.ServerPlayer player) {
-        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
-    }
-
-    public static void sendToAllClients(InfectionSyncPacket packet) {
-        CHANNEL.send(PacketDistributor.ALL.noArg(), packet);
-    }
-    public static void register() {
-        int id = 0;
-
+        // Paquete de cambio de fase
         CHANNEL.registerMessage(
-                id++,
-                ResonanceSyncPacket.class,
-                ResonanceSyncPacket::encode,
-                ResonanceSyncPacket::decode,
-                ResonanceSyncPacket::handle
-        );
-
-        CHANNEL.registerMessage(
-                id++,
-                InfectionSyncPacket.class,
-                InfectionSyncPacket::encode,
-                InfectionSyncPacket::decode,
-                InfectionSyncPacket::handle
-        );
-
-        // Nuevo: Phase Change Packet
-        Object PhaseChangePacket;
-        CHANNEL.registerMessage(
-                id++,
+                packetId++,
                 PhaseChangePacket.class,
                 PhaseChangePacket::encode,
                 PhaseChangePacket::decode,
                 PhaseChangePacket::handle
         );
+    }
+
+    public static void sendToClient(ResonanceSyncPacket packet, ServerPlayer player) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    public static void sendToAllClients(InfectionSyncPacket packet) {
+        CHANNEL.send(PacketDistributor.ALL.noArg(), packet);
     }
 }

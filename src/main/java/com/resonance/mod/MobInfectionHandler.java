@@ -6,9 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.entity.monster.ElderGuardian;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -17,9 +15,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
-
-import static MobInfectionHandler.INFECTION_RADIUS;
-import static MobInfectionHandler.INFECTION_RADIUS;
 
 @Mod.EventBusSubscriber(modid = ResonanceMod.MODID)
 public class MobInfectionHandler {
@@ -39,7 +34,7 @@ public class MobInfectionHandler {
     }
 
     public static void infectEntity(LivingEntity entity) {
-        // FIX: nunca infectar mobs propios del mod
+        // Nunca infectar mobs propios del mod
         if (isModMob(entity)) return;
 
         entity.getPersistentData().putBoolean(TAG_INFECTED, true);
@@ -137,15 +132,15 @@ public class MobInfectionHandler {
         }
 
         return entity instanceof net.minecraft.world.entity.Mob;
-    }}
+    }
 
     private static boolean isNearCorruption(Level level, BlockPos pos) {
         Block corrupted = ModBlocks.CORRUPTED_MINERAL.get();
         Block corruptedOre = ModBlocks.CORRUPTED_MINERAL_ORE.get();
 
-        for (int y = -MobInfectionHandler.INFECTION_RADIUS; y <= MobInfectionHandler.INFECTION_RADIUS; y++) {
-            for (int x = -MobInfectionHandler.INFECTION_RADIUS; x <= MobInfectionHandler.INFECTION_RADIUS; x++) {
-                for (int z = -MobInfectionHandler.INFECTION_RADIUS; z <= MobInfectionHandler.INFECTION_RADIUS; z++) {
+        for (int y = -INFECTION_RADIUS; y <= INFECTION_RADIUS; y++) {
+            for (int x = -INFECTION_RADIUS; x <= INFECTION_RADIUS; x++) {
+                for (int z = -INFECTION_RADIUS; z <= INFECTION_RADIUS; z++) {
                     Block b = level.getBlockState(pos.offset(x, y, z)).getBlock();
                     if (b == corrupted || b == corruptedOre) return true;
                 }
@@ -157,7 +152,7 @@ public class MobInfectionHandler {
     // -------------------------------------------------------------------------
     // Goal: atacar al jugador más cercano si está dentro del radio
     // -------------------------------------------------------------------------
-    static class AttackNearbyPlayerGoal extends net.minecraft.world.entity.ai.goal.Goal {
+    static class AttackNearbyPlayerGoal extends Goal {
 
         private final PathfinderMob mob;
         private final int radius;
@@ -198,3 +193,4 @@ public class MobInfectionHandler {
             mob.getNavigation().stop();
         }
     }
+}

@@ -1,6 +1,11 @@
 package com.resonance.mod.item;
 
+import com.resonance.mod.InfectionData;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -34,16 +39,18 @@ public class FrequencySynchronizerItem extends Item {
             return InteractionResultHolder.fail(stack);
         }
 
-        // Emitir pulso y mensaje
-        ((ServerLevel) level).sendParticles(
-                net.minecraft.core.particles.ParticleTypes.WITCH,
-                nucleus.getX() + 0.5, nucleus.getY() + 0.5, nucleus.getZ() + 0.5,
-                30, 1.5, 1.5, 1.5, 0.2
-        );
+        // Emitir pulso y mensaje (solo si el nivel es ServerLevel)
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(
+                    net.minecraft.core.particles.ParticleTypes.WITCH,
+                    nucleus.getX() + 0.5, nucleus.getY() + 0.5, nucleus.getZ() + 0.5,
+                    30, 1.5, 1.5, 1.5, 0.2
+            );
 
-        level.playSound(null, nucleus.getX(), nucleus.getY(), nucleus.getZ(),
-                net.minecraft.sounds.SoundEvents.RESPAWN_ANCHOR_CHARGE,
-                net.minecraft.sounds.SoundSource.BLOCKS, 1.0f, 0.8f);
+            serverLevel.playSound(null, nucleus.getX(), nucleus.getY(), nucleus.getZ(),
+                    SoundEvents.RESPAWN_ANCHOR_CHARGE,
+                    SoundSource.BLOCKS, 1.0f, 0.8f);
+        }
 
         // Mostrar fragmento del Códice según fase
         int phase = data.getPhase();

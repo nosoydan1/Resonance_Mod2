@@ -16,6 +16,7 @@ public class ResonanceCommand {
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(
                 Commands.literal("resonance")
+                        // Subcomando /resonance set <valor>
                         .then(Commands.literal("set")
                                 .then(Commands.argument("value", FloatArgumentType.floatArg(0, 100))
                                         .executes(ctx -> {
@@ -25,10 +26,11 @@ public class ResonanceCommand {
                                             if (player != null) {
                                                 ResonanceData.setResonance(player, value);
                                                 source.sendSuccess(() -> Component.literal(
-                                                        "Resonancia establecida a " + value + "%"), false);
+                                                        "§aResonancia establecida a " + value + "%"), false);
                                             }
                                             return 1;
                                         })))
+                        // Subcomando /resonance get
                         .then(Commands.literal("get")
                                 .executes(ctx -> {
                                     CommandSourceStack source = ctx.getSource();
@@ -36,53 +38,23 @@ public class ResonanceCommand {
                                     if (player != null) {
                                         float resonance = ResonanceData.getResonance(player);
                                         source.sendSuccess(() -> Component.literal(
-                                                "Resonancia actual: " + resonance + "%"), false);
+                                                "§5Resonancia actual: " + resonance + "%"), false);
+                                    }
+                                    return 1;
+                                }))
+                        // Subcomando /resonance reset
+                        .then(Commands.literal("reset")
+                                .executes(ctx -> {
+                                    CommandSourceStack source = ctx.getSource();
+                                    Player player = source.getPlayer();
+                                    if (player != null) {
+                                        ResonanceData.setResonance(player, 0f);
+                                        ResonanceData.markPlayer(player);
+                                        source.sendSuccess(() -> Component.literal(
+                                                "§aResonancia reseteada a 0%"), false);
                                     }
                                     return 1;
                                 }))
         );
     }
-}
-
-@SubscribeEvent
-public static void onRegisterCommands(RegisterCommandsEvent event) {
-    event.getDispatcher().register(
-            Commands.literal("resonance")
-                    .then(Commands.literal("set")
-                            .then(Commands.argument("value", FloatArgumentType.floatArg(0, 100))
-                                    .executes(ctx -> {
-                                        float value = FloatArgumentType.getFloat(ctx, "value");
-                                        CommandSourceStack source = ctx.getSource();
-                                        Player player = source.getPlayer();
-                                        if (player != null) {
-                                            ResonanceData.setResonance(player, value);
-                                            source.sendSuccess(() -> Component.literal(
-                                                    "§aResonancia establecida a " + value + "%"), false);
-                                        }
-                                        return 1;
-                                    })))
-                    .then(Commands.literal("get")
-                            .executes(ctx -> {
-                                CommandSourceStack source = ctx.getSource();
-                                Player player = source.getPlayer();
-                                if (player != null) {
-                                    float resonance = ResonanceData.getResonance(player);
-                                    source.sendSuccess(() -> Component.literal(
-                                            "§5Resonancia actual: " + resonance + "%"), false);
-                                }
-                                return 1;
-                            }))
-                    .then(Commands.literal("reset")
-                            .executes(ctx -> {
-                                CommandSourceStack source = ctx.getSource();
-                                Player player = source.getPlayer();
-                                if (player != null) {
-                                    ResonanceData.setResonance(player, 0f);
-                                    ResonanceData.markPlayer(player);
-                                    source.sendSuccess(() -> Component.literal(
-                                            "§aResonancia reseteada a 0%"), false);
-                                }
-                                return 1;
-                            }))
-    );
 }

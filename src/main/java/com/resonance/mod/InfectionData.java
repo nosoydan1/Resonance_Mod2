@@ -1,23 +1,17 @@
 package com.resonance.mod;
 
-import net.minecraftforge.fml.common.Mod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-
-private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(InfectionData.class);
+import net.minecraftforge.fml.common.Mod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mod.EventBusSubscriber(modid = ResonanceMod.MODID)
-public class InfectionData {
-}
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NucleusReachHandler.class);
-
 public class InfectionData extends SavedData {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfectionData.class);
     private static final String DATA_NAME = "resonance_infection";
 
     private int points = 0;

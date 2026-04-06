@@ -1,40 +1,28 @@
 package com.resonance.mod;
 
 import com.mojang.logging.LogUtils;
-import com.resonance.mod.entity.AshenKnightEntity;
-import com.resonance.mod.entity.AshenKnightRenderer;
-import com.resonance.mod.entity.ChipsEntity;
-import com.resonance.mod.entity.ChipsRenderer;
-import com.resonance.mod.entity.MineEntity;
-import com.resonance.mod.entity.MineRenderer;
-import com.resonance.mod.entity.MineralColossusEntity;
-import com.resonance.mod.entity.MineralColossusRenderer;
-import com.resonance.mod.entity.MineralGuardianEntity;
-import com.resonance.mod.entity.MineralGuardianRenderer;
-import com.resonance.mod.entity.RaliteEntity;
-import com.resonance.mod.entity.RaliteRenderer;
-import com.resonance.mod.entity.EchoEntity;
-import com.resonance.mod.entity.EchoRenderer;
+import com.resonance.mod.entity.*;
+import com.resonance.mod.network.NetworkHandler;
 import com.resonance.mod.registry.ModBlocks;
 import com.resonance.mod.registry.ModEntities;
 import com.resonance.mod.registry.ModItems;
-import com.resonance.mod.network.NetworkHandler;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.core.BlockPos;
-import java.util.Random;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
+
+import java.util.Random;
 
 import static com.resonance.mod.registry.ModBlocks.FLUIDS;
 
@@ -56,7 +44,8 @@ public class ResonanceMod {
         FLUIDS.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(PlayerResonanceCapabilityHandler.class);
+        // TODO: Implementar sistema de capacidades si es necesario
+        // MinecraftForge.EVENT_BUS.register(PlayerResonanceCapabilityHandler.class);
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
         LOGGER.info("Proyecto Resonance iniciando...");
@@ -73,8 +62,6 @@ public class ResonanceMod {
         event.put(ModEntities.RALITE.get(), RaliteEntity.createAttributes().build());
         event.put(ModEntities.ASHEN_KNIGHT.get(), AshenKnightEntity.createAttributes().build());
         event.put(ModEntities.MINERAL_GUARDIAN.get(), MineralGuardianEntity.createAttributes().build());
-
-        // FIX: Coloso estaba sin registrar — causaba crash al spawnear
         event.put(ModEntities.MINERAL_COLOSSUS.get(), MineralColossusEntity.createAttributes().build());
     }
 
@@ -134,15 +121,16 @@ public class ResonanceMod {
                     net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
         }
     }
+
+    // El sistema de capacidades no se usa en esta versión.
+    // Si necesitas capacidades, implementa AttachCapabilitiesEvent y define tus propias clases.
+    /*
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class CapabilityEvents {
-
         @SubscribeEvent
         public static void registerCapabilities(RegisterCapabilitiesEvent event) {
             event.register(PlayerResonanceCapability.class);
         }
     }
-
-// En el constructor principal:
-
+    */
 }
