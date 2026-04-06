@@ -1,0 +1,10 @@
+{
+  "resonance:nucleus_pulse": {
+    "sounds": [{"name": "resonance:block/nucleus_pulse"}],
+    "subtitle": "subtitles.resonance.nucleus_pulse"
+  },
+  "resonance:infection_spread": {
+    "sounds": [{"name": "resonance:block/infection_spread"}],
+    "subtitle": "subtitles.resonance.infection_spread"
+  }
+}

@@ -1,12 +1,11 @@
 package com.resonance.mod.registry;
 
 import com.resonance.mod.ResonanceMod;
-import com.resonance.mod.block.CorruptedMineralBlock;
-import com.resonance.mod.block.CorruptedMineralOreBlock;
-import com.resonance.mod.block.MeteoriteRockBlock;
-import com.resonance.mod.block.FossilizedCarbonBlock;
-import com.resonance.mod.block.DampingMechanismBlock;
+import com.resonance.mod.block.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -62,4 +61,24 @@ public class ModBlocks {
                                     .sound(net.minecraft.world.level.block.SoundType.STONE)
                                     .noOcclusion()
                     ));
+
+    // Mineral de spike - arbusto con frutos
+    public static final RegistryObject<Block> MINERAL_SPIKE =
+            BLOCKS.register("mineral_spike",
+                    () -> new MineralSpikeBlock());
+
+    // Fluidos
+    public static final DeferredRegister<Fluid> FLUIDS =
+            DeferredRegister.create(ForgeRegistries.FLUIDS, ResonanceMod.MODID);
+
+    public static final RegistryObject<FlowingFluid> MINERALIZED_WATER =
+            FLUIDS.register("mineralized_water", MineralizedWaterFluid::new);
+
+    public static final RegistryObject<FlowingFluid> MINERALIZED_WATER_FLOWING =
+            FLUIDS.register("mineralized_water_flowing", MineralizedWaterFluid::new);
+
+    public static final RegistryObject<LiquidBlock> MINERALIZED_WATER_BLOCK =
+            BLOCKS.register("mineralized_water",
+                    () -> new MineralizedWaterBlock(MINERALIZED_WATER.get()));
+
 }

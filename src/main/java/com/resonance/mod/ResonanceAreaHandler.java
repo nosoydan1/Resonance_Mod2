@@ -1,5 +1,7 @@
 package com.resonance.mod;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.resonance.mod.block.DampingMechanismBlock;
 import com.resonance.mod.network.NetworkHandler;
 import com.resonance.mod.network.ResonanceSyncPacket;
@@ -12,6 +14,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+public class ResonanceAreaHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResonanceAreaHandler.class);
+
+    public void algunMetodo() {
+        // Antes: System.out.println("Jugador cerca");
+        LOGGER.debug("Jugador cerca del área de resonancia");
+    }
+}
+
+private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ResonanceAreaHandler.class);
 
 @Mod.EventBusSubscriber(modid = ResonanceMod.MODID)
 public class ResonanceAreaHandler {
@@ -72,4 +85,41 @@ public class ResonanceAreaHandler {
         }
         return false;
     }
+}
+private static boolean isNearCorruptedMineral(Level level, BlockPos center) {
+    Block corruptedMineral = ModBlocks.CORRUPTED_MINERAL.get();
+    Block corruptedMineralOre = ModBlocks.CORRUPTED_MINERAL_ORE.get();
+
+    // Usar BFS en lugar de búsqueda bruta
+    java.util.Queue<BlockPos> queue = new java.util.LinkedList<>();
+    java.util.Set<BlockPos> visited = new java.util.HashSet<>();
+
+    queue.add(center);
+    visited.add(center);
+
+    while (!queue.isEmpty() && visited.size() < 216) { // 6x6x6 = 216 bloques máx
+        BlockPos current = queue.poll();
+
+        if (Math.abs(current.getX() - center.getX()) > ResonanceAreaHandler.DETECTION_RADIUS ||
+                Math.abs(current.getY() - center.getY()) > ResonanceAreaHandler.DETECTION_RADIUS ||
+                Math.abs(current.getZ() - center.getZ()) > ResonanceAreaHandler.DETECTION_RADIUS) {
+            continue;
+        }
+
+        Block block = level.getBlockState(current).getBlock();
+        if (block == corruptedMineral || block == corruptedMineralOre) {
+            return true;
+        }
+
+        // Añadir vecinos
+        for (BlockPos neighbor : BlockPos.betweenClosed(
+                current.offset(-1, -1, -1), current.offset(1, 1, 1))) {
+            if (!visited.contains(neighbor)) {
+                visited.add(neighbor);
+                queue.add(neighbor);
+            }
+        }
+    }
+
+    return false;
 }

@@ -18,6 +18,9 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 
+import static MobInfectionHandler.INFECTION_RADIUS;
+import static MobInfectionHandler.INFECTION_RADIUS;
+
 @Mod.EventBusSubscriber(modid = ResonanceMod.MODID)
 public class MobInfectionHandler {
 
@@ -112,32 +115,37 @@ public class MobInfectionHandler {
         });
     }
 
-    private static boolean canBeInfected(LivingEntity entity) {
+    public static boolean canBeInfected(LivingEntity entity) {
+        // Checks básicos
+        if (entity == null) return false;
         if (entity instanceof Player) return false;
-        // FIX: nunca infectar mobs del mod
         if (isModMob(entity)) return false;
+        if (entity.isInvulnerable()) return false;
+
+        // Entidades especiales que no pueden infectarse
         if (entity instanceof net.minecraft.world.entity.monster.Shulker) return false;
-        // Aldeanos: su lógica interna de sueño/trabajo causa crashes al infectarlos
         if (entity instanceof net.minecraft.world.entity.npc.Villager) return false;
         if (entity instanceof net.minecraft.world.entity.npc.WanderingTrader) return false;
+        if (entity instanceof net.minecraft.world.entity.animal.IronGolem) return false;
+        if (entity instanceof net.minecraft.world.entity.boss.wither.WitherBoss) return false;
+        if (entity instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon) return false;
+        if (entity instanceof net.minecraft.world.entity.monster.ElderGuardian) return false;
 
-        // Bosses con resistencia 75%
-        if (entity instanceof WitherBoss
-                || entity instanceof ElderGuardian
-                || entity instanceof EnderDragon) {
+        // Para bosses normales: 25% probabilidad
+        if (entity.getMaxHealth() > 50) {
             return Math.random() < 0.25;
         }
 
         return entity instanceof net.minecraft.world.entity.Mob;
-    }
+    }}
 
     private static boolean isNearCorruption(Level level, BlockPos pos) {
         Block corrupted = ModBlocks.CORRUPTED_MINERAL.get();
         Block corruptedOre = ModBlocks.CORRUPTED_MINERAL_ORE.get();
 
-        for (int y = -INFECTION_RADIUS; y <= INFECTION_RADIUS; y++) {
-            for (int x = -INFECTION_RADIUS; x <= INFECTION_RADIUS; x++) {
-                for (int z = -INFECTION_RADIUS; z <= INFECTION_RADIUS; z++) {
+        for (int y = -MobInfectionHandler.INFECTION_RADIUS; y <= MobInfectionHandler.INFECTION_RADIUS; y++) {
+            for (int x = -MobInfectionHandler.INFECTION_RADIUS; x <= MobInfectionHandler.INFECTION_RADIUS; x++) {
+                for (int z = -MobInfectionHandler.INFECTION_RADIUS; z <= MobInfectionHandler.INFECTION_RADIUS; z++) {
                     Block b = level.getBlockState(pos.offset(x, y, z)).getBlock();
                     if (b == corrupted || b == corruptedOre) return true;
                 }
@@ -190,4 +198,3 @@ public class MobInfectionHandler {
             mob.getNavigation().stop();
         }
     }
-}

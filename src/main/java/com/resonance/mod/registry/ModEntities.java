@@ -8,6 +8,7 @@ import com.resonance.mod.entity.MineralColossusEntity;
 import com.resonance.mod.entity.MineralGuardianEntity;
 import com.resonance.mod.entity.MineralParticlesProjectileEntity;
 import com.resonance.mod.entity.RaliteEntity;
+import com.resonance.mod.entity.EchoEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -55,6 +56,12 @@ public class ModEntities {
                     () -> EntityType.Builder.<MineralColossusEntity>of(MineralColossusEntity::new, MobCategory.MONSTER)
                             .sized(3.0f, 4.0f) // Muy grande
                             .build(new ResourceLocation(ResonanceMod.MODID, "mineral_colossus").toString()));
+
+    public static final RegistryObject<EntityType<EchoEntity>> ECHO =
+            ENTITIES.register("echo",
+                    () -> EntityType.Builder.<EchoEntity>of(EchoEntity::new, MobCategory.MONSTER)
+                            .sized(0.5f, 0.5f)
+                            .build(new ResourceLocation(ResonanceMod.MODID, "echo").toString()));
 
     public static final RegistryObject<EntityType<MineralParticlesProjectileEntity>> MINERAL_PARTICLES_PROJECTILE =
             ENTITIES.register("mineral_particles_projectile",

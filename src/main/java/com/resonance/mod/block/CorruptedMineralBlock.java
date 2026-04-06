@@ -29,6 +29,21 @@ public class CorruptedMineralBlock extends Block {
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         InfectionData data = InfectionData.get(level);
+
+        // Fase 3+: generar Spikes ocasionalmente
+        if (data.getPhase() >= 3 && random.nextFloat() < 0.15f) {
+            int dx = random.nextInt(3) - 1;
+            int dy = random.nextInt(2);
+            int dz = random.nextInt(3) - 1;
+
+            BlockPos spikePos = pos.offset(dx, dy, dz);
+            Block spikeBlock = level.getBlockState(spikePos).getBlock();
+
+            if (spikeBlock == Blocks.AIR || spikeBlock == Blocks.TALL_GRASS) {
+                level.setBlockAndUpdate(spikePos, ModBlocks.MINERAL_SPIKE.get().defaultBlockState());
+            }
+        }
+
         if (data.getPhase() >= 6) return;
 
         int radius = 3;

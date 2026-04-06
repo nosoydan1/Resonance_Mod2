@@ -1,11 +1,14 @@
 package com.resonance.mod;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.resonance.mod.network.InfectionSyncPacket;
 import com.resonance.mod.network.NetworkHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +19,7 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = ResonanceMod.MODID)
 public class NucleusReachHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NucleusReachHandler.class);
     private static final int CHECK_INTERVAL = 40;
     private static final int REACH_RADIUS = 3;
     // Radio de defensa — mobs infectados aquí defienden el núcleo
@@ -39,7 +43,7 @@ public class NucleusReachHandler {
 
             List<LivingEntity> nearNucleus = level.getEntitiesOfClass(
                     LivingEntity.class,
-                    new net.minecraft.world.phys.AABB(
+                    new AABB(
                             nucleus.getX() - REACH_RADIUS,
                             nucleus.getY() - REACH_RADIUS,
                             nucleus.getZ() - REACH_RADIUS,

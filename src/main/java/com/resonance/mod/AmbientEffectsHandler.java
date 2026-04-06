@@ -160,7 +160,7 @@ public class AmbientEffectsHandler {
             event.setCanceled(true);
         }
 
-        @SubscribeEvent
+        @@SubscribeEvent
         public static void onClientTick(TickEvent.ClientTickEvent event) {
             if (event.phase != TickEvent.Phase.END) return;
 
@@ -168,10 +168,12 @@ public class AmbientEffectsHandler {
             if (phase < 4) return;
 
             particleTick++;
+
+            // Reducir frecuencia: máximo 1 spawn cada 2 ticks
             int interval = switch (phase) {
                 case 4 -> 10;
-                case 5 -> 5;
-                case 6 -> 2;
+                case 5 -> 7;
+                case 6 -> 4;
                 default -> 20;
             };
 
@@ -182,11 +184,13 @@ public class AmbientEffectsHandler {
             Player player = mc.player;
             if (player == null || mc.level == null) return;
 
-            for (int i = 0; i < phase; i++) {
+            // Limitar número de partículas
+            int particleCount = Math.min(phase, 3); // Máximo 3 partículas por tick
+            for (int i = 0; i < particleCount; i++) {
                 double x = player.getX() + (Math.random() - 0.5) * 20;
                 double y = player.getY() + Math.random() * 10;
                 double z = player.getZ() + (Math.random() - 0.5) * 20;
-                mc.level.addParticle(ParticleTypes.ASH, x, y, z, 0, -0.05, 0);
+                mc.level.addParticle(net.minecraft.core.particles.ParticleTypes.ASH, x, y, z, 0, -0.05, 0);
             }
         }
     }

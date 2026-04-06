@@ -61,4 +61,63 @@ public class Config
                 .map(itemName -> ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName)))
                 .collect(Collectors.toSet());
     }
+
+    @Mod.EventBusSubscriber(modid = ResonanceMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public class Config {
+
+        private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+
+        // RESONANCIA
+        private static final ForgeConfigSpec.IntValue RESONANCE_THRESHOLD_SLOWNESS = BUILDER
+                .comment("Resonancia threshold para Lentitud")
+                .defineInRange("resonance.threshold_slowness", 20, 0, 100);
+
+        private static final ForgeConfigSpec.IntValue RESONANCE_THRESHOLD_FATIGUE = BUILDER
+                .comment("Resonancia threshold para Fatiga Minera")
+                .defineInRange("resonance.threshold_fatigue", 50, 0, 100);
+
+        private static final ForgeConfigSpec.IntValue RESONANCE_THRESHOLD_WEAKNESS = BUILDER
+                .comment("Resonancia threshold para Debilidad")
+                .defineInRange("resonance.threshold_weakness", 80, 0, 100);
+
+        // INFECCIÓN
+        private static final ForgeConfigSpec.IntValue INFECTION_PHASE_1_POINTS = BUILDER
+                .comment("Puntos para pasar a Fase 2")
+                .defineInRange("infection.phase_1_points", 1500, 100, 10000);
+
+        private static final ForgeConfigSpec.IntValue INFECTION_PHASE_2_POINTS = BUILDER
+                .comment("Puntos para pasar a Fase 3")
+                .defineInRange("infection.phase_2_points", 3225, 100, 10000);
+
+        // COLOSO
+        private static final ForgeConfigSpec.DoubleValue COLOSSUS_BASE_HP = BUILDER
+                .comment("HP base del Coloso")
+                .defineInRange("colossus.base_hp", 1400.0, 100.0, 10000.0);
+
+        private static final ForgeConfigSpec.DoubleValue COLOSSUS_HP_MULTIPLAYER = BUILDER
+                .comment("Multiplicador de HP por jugador adicional")
+                .defineInRange("colossus.hp_multiplayer", 700.0, 100.0, 5000.0);
+
+        static final ForgeConfigSpec SPEC = BUILDER.build();
+
+        // Variables públicas
+        public static int resonanceThresholdSlowness;
+        public static int resonanceThresholdFatigue;
+        public static int resonanceThresholdWeakness;
+        public static int infectionPhase1Points;
+        public static int infectionPhase2Points;
+        public static double colossusBaseHP;
+        public static double colossusHPMultiplayer;
+
+        @SubscribeEvent
+        static void onLoad(final ModConfigEvent event) {
+            resonanceThresholdSlowness = RESONANCE_THRESHOLD_SLOWNESS.get();
+            resonanceThresholdFatigue = RESONANCE_THRESHOLD_FATIGUE.get();
+            resonanceThresholdWeakness = RESONANCE_THRESHOLD_WEAKNESS.get();
+            infectionPhase1Points = INFECTION_PHASE_1_POINTS.get();
+            infectionPhase2Points = INFECTION_PHASE_2_POINTS.get();
+            colossusBaseHP = COLOSSUS_BASE_HP.get();
+            colossusHPMultiplayer = COLOSSUS_HP_MULTIPLAYER.get();
+        }
+    }
 }

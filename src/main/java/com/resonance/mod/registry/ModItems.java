@@ -1,19 +1,8 @@
 package com.resonance.mod.registry;
 
-import com.resonance.mod.item.AntidoteItem;
-import com.resonance.mod.item.SilentShardsItem;
+import com.resonance.mod.item.*;
 import com.resonance.mod.entity.MineralParticlesProjectileEntity;
 import com.resonance.mod.ResonanceMod;
-import com.resonance.mod.item.BreathingMaskItem;
-import com.resonance.mod.item.DissonantInjectionItem;
-import com.resonance.mod.item.LocatingCompassItem;
-import com.resonance.mod.item.FragmentedPickaxeItem;
-import com.resonance.mod.item.AnchorShieldItem;
-import com.resonance.mod.item.SyringeGunItem;
-import com.resonance.mod.item.MineralParticlesVialItem;
-import com.resonance.mod.item.AshFoodItem;
-import com.resonance.mod.item.CodexItem;
-import com.resonance.mod.item.SplashMineralParticlesItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
@@ -46,6 +35,10 @@ public class ModItems {
     public static final RegistryObject<Item> FOSSILIZED_CARBON_BLOCK =
             ITEMS.register("fossilized_carbon_block",
                     () -> new BlockItem(ModBlocks.FOSSILIZED_CARBON_BLOCK.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> MINERAL_SPIKE =
+            ITEMS.register("mineral_spike",
+                    () -> new BlockItem(ModBlocks.MINERAL_SPIKE.get(), new Item.Properties()));
 
     // -------------------------------------------------------------------------
     // Materiales sueltos
@@ -110,6 +103,10 @@ public class ModItems {
             ITEMS.register("antidote",
                     () -> new AntidoteItem(new Item.Properties().stacksTo(16)));
 
+    public static final RegistryObject<Item> ECHO_RESIDUE =
+            ITEMS.register("echo_residue",
+                    () -> new EchoResidueItem(new Item.Properties()));
+
     // -------------------------------------------------------------------------
     // Consumibles
     // -------------------------------------------------------------------------
@@ -160,6 +157,15 @@ public class ModItems {
                     () -> new AshFoodItem(2, 0.3f, 4.0f, true,
                             new Item.Properties().stacksTo(1)));
 
+   // Consumibles del bioma - Cruda y cocinada
+    public static final RegistryObject<Item> ORGANIC_GEM_OPAQUE =
+            ITEMS.register("organic_gem_opaque",
+                    () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<Item> ORGANIC_GEM_REFINED =
+            ITEMS.register("organic_gem_refined",
+                    () -> new Item(new Item.Properties()));
+
     // -------------------------------------------------------------------------
     // Herramientas y equipamiento
     // -------------------------------------------------------------------------
@@ -167,9 +173,9 @@ public class ModItems {
             ITEMS.register("fossilized_carbon_torch",
                     () -> new Item(new Item.Properties().stacksTo(64)));
 
-    public static final RegistryObject<Item> LOCATING_COMPASS =
-            ITEMS.register("locating_compass",
-                    () -> new LocatingCompassItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> FREQUENCY_SYNCHRONIZER =
+            ITEMS.register("frequency_synchronizer",
+                    () -> new FrequencySynchronizerItem(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> BREATHING_MASK =
             ITEMS.register("breathing_mask",
@@ -187,6 +193,10 @@ public class ModItems {
     public static final RegistryObject<Item> FRAGMENTED_PICKAXE =
             ITEMS.register("fragmented_pickaxe",
                     () -> new FragmentedPickaxeItem(new Item.Properties().stacksTo(1)));
+
+    public static final RegistryObject<Item> TECTONIC_MACE =
+            ITEMS.register("tectonic_mace",
+                    () -> new TectonicMaceItem(new Item.Properties()));
 
     // -------------------------------------------------------------------------
     // Items narrativos — Códice

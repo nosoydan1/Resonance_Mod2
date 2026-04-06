@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RCR",
+    "RCR",
+    " I "
+  ],
+  "key": {
+    "R": {"item": "minecraft:iron_rod"},
+    "C": {"item": "resonance:compact_crystal"},
+    "I": {"item": "minecraft:iron_ingot"}
+  },
+  "result": {
+    "item": "resonance:tectonic_mace",
+    "count": 1
+  }
+}

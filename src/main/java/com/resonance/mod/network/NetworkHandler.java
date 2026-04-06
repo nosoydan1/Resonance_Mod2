@@ -43,4 +43,33 @@ public class NetworkHandler {
     public static void sendToAllClients(InfectionSyncPacket packet) {
         CHANNEL.send(PacketDistributor.ALL.noArg(), packet);
     }
+    public static void register() {
+        int id = 0;
+
+        CHANNEL.registerMessage(
+                id++,
+                ResonanceSyncPacket.class,
+                ResonanceSyncPacket::encode,
+                ResonanceSyncPacket::decode,
+                ResonanceSyncPacket::handle
+        );
+
+        CHANNEL.registerMessage(
+                id++,
+                InfectionSyncPacket.class,
+                InfectionSyncPacket::encode,
+                InfectionSyncPacket::decode,
+                InfectionSyncPacket::handle
+        );
+
+        // Nuevo: Phase Change Packet
+        Object PhaseChangePacket;
+        CHANNEL.registerMessage(
+                id++,
+                PhaseChangePacket.class,
+                PhaseChangePacket::encode,
+                PhaseChangePacket::decode,
+                PhaseChangePacket::handle
+        );
+    }
 }

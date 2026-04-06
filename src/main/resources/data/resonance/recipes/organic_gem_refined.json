@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "resonance:organic_gem_opaque"
+  },
+  "result": "resonance:organic_gem_refined",
+  "experience": 1.0,
+  "cookingtime": 100
+}

@@ -13,6 +13,8 @@ import com.resonance.mod.entity.MineralGuardianEntity;
 import com.resonance.mod.entity.MineralGuardianRenderer;
 import com.resonance.mod.entity.RaliteEntity;
 import com.resonance.mod.entity.RaliteRenderer;
+import com.resonance.mod.entity.EchoEntity;
+import com.resonance.mod.entity.EchoRenderer;
 import com.resonance.mod.registry.ModBlocks;
 import com.resonance.mod.registry.ModEntities;
 import com.resonance.mod.registry.ModItems;
@@ -34,6 +36,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
+import static com.resonance.mod.registry.ModBlocks.FLUIDS;
+
 @Mod(ResonanceMod.MODID)
 public class ResonanceMod {
 
@@ -49,9 +53,10 @@ public class ResonanceMod {
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModEntities.ENTITIES.register(modEventBus);
+        FLUIDS.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
-
+        MinecraftForge.EVENT_BUS.register(PlayerResonanceCapabilityHandler.class);
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
         LOGGER.info("Proyecto Resonance iniciando...");
@@ -68,6 +73,7 @@ public class ResonanceMod {
         event.put(ModEntities.RALITE.get(), RaliteEntity.createAttributes().build());
         event.put(ModEntities.ASHEN_KNIGHT.get(), AshenKnightEntity.createAttributes().build());
         event.put(ModEntities.MINERAL_GUARDIAN.get(), MineralGuardianEntity.createAttributes().build());
+
         // FIX: Coloso estaba sin registrar — causaba crash al spawnear
         event.put(ModEntities.MINERAL_COLOSSUS.get(), MineralColossusEntity.createAttributes().build());
     }
@@ -123,8 +129,20 @@ public class ResonanceMod {
             event.registerEntityRenderer(ModEntities.ASHEN_KNIGHT.get(), AshenKnightRenderer::new);
             event.registerEntityRenderer(ModEntities.MINERAL_GUARDIAN.get(), MineralGuardianRenderer::new);
             event.registerEntityRenderer(ModEntities.MINERAL_COLOSSUS.get(), MineralColossusRenderer::new);
+            event.registerEntityRenderer(ModEntities.ECHO.get(), EchoRenderer::new);
             event.registerEntityRenderer(ModEntities.MINERAL_PARTICLES_PROJECTILE.get(),
                     net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
         }
     }
+    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class CapabilityEvents {
+
+        @SubscribeEvent
+        public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+            event.register(PlayerResonanceCapability.class);
+        }
+    }
+
+// En el constructor principal:
+
 }

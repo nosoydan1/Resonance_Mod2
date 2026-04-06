@@ -1,11 +1,17 @@
 package com.resonance.mod.entity;
 
 import com.resonance.mod.MobSpawnHandler;
+import com.resonance.mod.registry.ModEntities;
 import com.resonance.mod.registry.ModItems;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import com.resonance.mod.entity.EchoEntity;
+import com.resonance.mod.entity.EchoRenderer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -17,6 +23,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.core.BlockPos;
 import com.resonance.mod.MobInfectionHandler;
+
+import java.util.zip.Inflater;
 
 public class MineralColossusEntity extends Monster {
 
@@ -39,6 +47,8 @@ public class MineralColossusEntity extends Monster {
                 // FIX: forzar armor para que los hits se sientan correctamente
                 .add(Attributes.ARMOR, 10.0)
                 .add(Attributes.ARMOR_TOUGHNESS, 4.0);
+                // Escalado multijugador: +50% HP por jugador adicional
+                .add(Attributes.MAX_HEALTH, 1400.0 + (/*contar jugadores cercanos */ *700))
     }
 
     @Override
@@ -61,6 +71,23 @@ public class MineralColossusEntity extends Monster {
                     }
                 }
             }
+                if (!this.level().isClientSide() && this.tickCount % 100 == 0) {
+                    int nearbyPlayers = (int) this.level().getNearbyPlayers(
+                            net.minecraft.world.entity.ai.targeting.TargetingConditions.forCombat(),
+                            this, this.getBoundingBox().inflate(64)).size();
+
+                    double baseHealth = 1400.0;
+                    double scaledHealth = baseHealth + (nearbyPlayers - 1) * 700;
+                    this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(scaledHealth);
+                }
+
+            private Inflater getBoundingBox() {
+                return null;
+            }
+
+            private AttributeInstance getAttribute(Attribute maxHealth) {
+            }
+
         });
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 0.6));
 
@@ -90,9 +117,32 @@ public class MineralColossusEntity extends Monster {
     @Override
     public void tick() {
         super.tick();
-        if (this.level().isClientSide()) return;
+        // Fase 3: invocar Echos
+        if (this.combatPhase == 3 && this.level() instanceof ServerLevel serverLevel) {
+            if (this.tickCount % 60 == 0 && this.getTarget() != null) { // Cada 3 segundos
+                spawnEcho(serverLevel);
+            }
+        }
 
         updateCombatPhase();
+    }
+
+    private void spawnEcho(ServerLevel level) {
+        if (level.getEntitiesOfClass(EchoEntity.class,
+                this.getBoundingBox().inflate(10)).size() >= 3) {
+            return; // Máximo 3 Echos
+        }
+
+        EchoEntity echo = ModEntities.ECHO.get().create(level);
+        if (echo == null) return;
+
+        double angle = Math.random() * Math.PI * 2;
+        double x = this.getX() + Math.cos(angle) * 5;
+        double z = this.getZ() + Math.sin(angle) * 5;
+
+        echo.moveTo(x, this.getY() + 3, z, 0, 0);
+        echo.setParent(this);
+        level.addFreshEntity(echo);
     }
 
     private void updateCombatPhase() {
@@ -171,5 +221,53 @@ public class MineralColossusEntity extends Monster {
                             "§5§l[EL COLOSO HA CAÍDO. LA INFECCIÓN SE DISIPA...]")));
             MobSpawnHandler.onColossusDefeated();
         }
+    }
+    private void applyPhaseAttributes() {
+        switch (combatPhase) {
+            case 1 -> {
+                this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.15);
+                // Sin efecto visual especial
+            }
+            case 2 -> {
+                this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.15);
+                // Particulas rojo oscuro
+                if (this.level() instanceof ServerLevel serverLevel) {
+                    serverLevel.sendParticles(
+                            net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR,
+                            this.getX(), this.getY() + 2, this.getZ(),
+                            30, 2, 2, 2, 0.1
+                    );
+                }
+            }
+            case 3 -> {
+                this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.12);
+                // Particulas púrpura
+                if (this.level() instanceof ServerLevel serverLevel) {
+                    serverLevel.sendParticles(
+                            net.minecraft.core.particles.ParticleTypes.WITCH,
+                            this.getX(), this.getY() + 2, this.getZ(),
+                            50, 2, 2, 2, 0.15
+                    );
+                }
+            }
+        }
+    }
+
+    private void announcePhase() {
+        String msg = switch (combatPhase) {
+            case 1 -> "§c§l[COLOSO — FASE 1: El Coloso comienza a despertar]";
+            case 2 -> "§4§l[COLOSO — FASE 2: ¡El Coloso desata su poder!]";
+            case 3 -> "§5§l[COLOSO — FASE 3: ¡El Coloso agoniza... y se vuelve más peligroso!]";
+            default -> "";
+        };
+
+        this.level().players().forEach(p -> {
+            p.sendSystemMessage(net.minecraft.network.chat.Component.literal(msg));
+            // Reproducir sonido
+            p.playNotifySound(
+                    net.minecraft.sounds.SoundEvents.WARDEN_NEARBY_CLOSE,
+                    net.minecraft.sounds.SoundSource.HOSTILE, 1.0f, 1.0f
+            );
+        });
     }
 }
