@@ -60,19 +60,22 @@ public class ChipsEntity extends PathfinderMob {
                 e -> canAttack()));
     }
 
-    private boolean canAttack() {
-        if (this.level().isClientSide()) return false;
-        if (!(this.level() instanceof ServerLevel serverLevel)) return false;
-        return InfectionData.get(serverLevel).getPhase() >= 5;
+    public boolean canAttack() {
+        if (this.level().isClientSide) return false;
+        InfectionData data = InfectionData.get(this.level());
+        if (data == null) return false;
+        return data.getPhase() >= 5;
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (this.level().isClientSide()) return;
+        if (this.level().isClientSide) return;
         if (!(this.level() instanceof ServerLevel serverLevel)) return;
 
-        int phase = InfectionData.get(serverLevel).getPhase();
+        // Obtener la fase actual
+        InfectionData data = InfectionData.get(this.level());
+        int phase = (data != null) ? data.getPhase() : 0;
 
         // Fase 6: iniciar petrificación
         if (phase >= 6 && !isPetrifying) {
@@ -103,8 +106,11 @@ public class ChipsEntity extends PathfinderMob {
 
         @Override
         public boolean canUse() {
-            if (!(chips.level() instanceof ServerLevel serverLevel)) return false;
-            int phase = InfectionData.get(serverLevel).getPhase();
+            Level level = chips.level();
+            if (level.isClientSide) return false;
+            InfectionData data = InfectionData.get(level);
+            if (data == null) return false;
+            int phase = data.getPhase();
             return phase >= 1 && phase <= 4;
         }
 
@@ -119,8 +125,12 @@ public class ChipsEntity extends PathfinderMob {
             if (cooldown > 0) return;
             cooldown = 40;
 
-            if (!(chips.level() instanceof ServerLevel level)) return;
-            InfectionData data = InfectionData.get(level);
+            Level level = chips.level();
+            if (level.isClientSide) return;
+            if (!(level instanceof ServerLevel serverLevel)) return;
+
+            InfectionData data = InfectionData.get(serverLevel);
+            if (data == null) return;
             int phase = data.getPhase();
 
             float effectiveness = switch (phase) {
@@ -140,9 +150,9 @@ public class ChipsEntity extends PathfinderMob {
                     (int)(Math.random() * 5) - 2
             );
 
-            Block targetBlock = level.getBlockState(target).getBlock();
+            Block targetBlock = serverLevel.getBlockState(target).getBlock();
             if (CorruptedMineralBlock.canInfectStatic(targetBlock)) {
-                level.setBlockAndUpdate(target,
+                serverLevel.setBlockAndUpdate(target,
                         ModBlocks.CORRUPTED_MINERAL.get().defaultBlockState());
                 data.addPoints(InfectionData.getPointsForBlock(
                         net.minecraft.core.registries.BuiltInRegistries.BLOCK

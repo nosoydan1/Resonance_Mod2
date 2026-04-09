@@ -162,6 +162,8 @@ public class MineralColossusEntity extends Monster {
         }
     }
 
+
+
     private void announcePhase() {
         String msg = switch (combatPhase) {
             case 1 -> "§c§l[COLOSO — FASE 1: El Coloso comienza a despertar]";

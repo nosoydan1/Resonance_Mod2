@@ -1,7 +1,8 @@
 {
   "variants": {
-    "": {
-      "model": "resonance:block/mineral_spike"
-    }
+    "age=0": { "model": "resonance:block/mineral_spike_age0" },
+    "age=1": { "model": "resonance:block/mineral_spike_age1" },
+    "age=2": { "model": "resonance:block/mineral_spike_age2" },
+    "age=3": { "model": "resonance:block/mineral_spike_age3" }
   }
 }

@@ -1,16 +1,19 @@
 package com.resonance.mod.registry;
 
 import com.resonance.mod.item.*;
-import com.resonance.mod.entity.MineralParticlesProjectileEntity;
 import com.resonance.mod.ResonanceMod;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import com.resonance.mod.ResonanceInfectionHitHandler;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+
+
 
 public class ModItems {
 
@@ -20,25 +23,36 @@ public class ModItems {
     // -------------------------------------------------------------------------
     // Items de bloques
     // -------------------------------------------------------------------------
-    public static final RegistryObject<Item> CORRUPTED_MINERAL =
-            ITEMS.register("corrupted_mineral",
-                    () -> new BlockItem(ModBlocks.CORRUPTED_MINERAL.get(), new Item.Properties()));
+    public static final RegistryObject<Item> CORRUPTED_MINERAL = ITEMS.register("corrupted_mineral",
+            () -> new BlockItem(ModBlocks.CORRUPTED_MINERAL.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> CORRUPTED_MINERAL_ORE =
-            ITEMS.register("corrupted_mineral_ore",
-                    () -> new BlockItem(ModBlocks.CORRUPTED_MINERAL_ORE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> CORRUPTED_MINERAL_ORE = ITEMS.register("corrupted_mineral_ore",
+            () -> new BlockItem(ModBlocks.CORRUPTED_MINERAL_ORE.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> METEORITE_ROCK =
-            ITEMS.register("meteorite_rock",
-                    () -> new BlockItem(ModBlocks.METEORITE_ROCK.get(), new Item.Properties()));
+    public static final RegistryObject<Item> METEORITE_ROCK = ITEMS.register("meteorite_rock",
+            () -> new BlockItem(ModBlocks.METEORITE_ROCK.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> FOSSILIZED_CARBON_BLOCK =
-            ITEMS.register("fossilized_carbon_block",
-                    () -> new BlockItem(ModBlocks.FOSSILIZED_CARBON_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<Item> FOSSILIZED_CARBON_BLOCK = ITEMS.register("fossilized_carbon_block",
+            () -> new BlockItem(ModBlocks.FOSSILIZED_CARBON_BLOCK.get(), new Item.Properties()));
 
-    public static final RegistryObject<Item> MINERAL_SPIKE =
-            ITEMS.register("mineral_spike",
-                    () -> new BlockItem(ModBlocks.MINERAL_SPIKE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> CORRUPTED_DIRT = ITEMS.register("corrupted_dirt",
+            () -> new BlockItem(ModBlocks.CORRUPTED_DIRT.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> CORRUPTED_GRASS = ITEMS.register("corrupted_grass",
+            () -> new BlockItem(ModBlocks.CORRUPTED_GRASS.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> CORRUPTED_STONE = ITEMS.register("corrupted_stone",
+            () -> new BlockItem(ModBlocks.CORRUPTED_STONE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> CORRUPTED_SAND = ITEMS.register("corrupted_sand",
+            () -> new BlockItem(ModBlocks.CORRUPTED_SAND.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> CORRUPTED_GRAVEL = ITEMS.register("corrupted_gravel",
+            () -> new BlockItem(ModBlocks.CORRUPTED_GRAVEL.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> CORRUPTED_OAK_LOG = ITEMS.register("corrupted_oak_log",
+            () -> new BlockItem(ModBlocks.CORRUPTED_OAK_LOG.get(), new Item.Properties()));
+
 
     // -------------------------------------------------------------------------
     // Materiales sueltos
@@ -158,13 +172,27 @@ public class ModItems {
                             new Item.Properties().stacksTo(1)));
 
    // Consumibles del bioma - Cruda y cocinada
-    public static final RegistryObject<Item> ORGANIC_GEM_OPAQUE =
-            ITEMS.register("organic_gem_opaque",
-                    () -> new Item(new Item.Properties()));
+   // -------------------------------------------------------------------------
+   // Gema Opaca (con lógica personalizada)
+   public static final RegistryObject<Item> ORGANIC_GEM_OPAQUE = ITEMS.register("organic_gem_opaque",
+           () -> new OrganicGemItem(new Item.Properties().food(new FoodProperties.Builder()
+                   .nutrition(3)      // 1.5 puntos de hambre
+                   .saturationMod(0.2f)
+                   .alwaysEat()
+                   .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 0), 1.0f)
+                   .build())));
 
-    public static final RegistryObject<Item> ORGANIC_GEM_REFINED =
-            ITEMS.register("organic_gem_refined",
-                    () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> MINERAL_SPIKE = ITEMS.register("mineral_spike",
+            () -> new MineralSpikeItem(ModBlocks.MINERAL_SPIKE.get(), new Item.Properties()
+                    .food(new FoodProperties.Builder().nutrition(2).saturationMod(0.2f).alwaysEat().build())));
+
+    // Gema Refinada (sin lógica especial, solo comida)
+    public static final RegistryObject<Item> ORGANIC_GEM_REFINED = ITEMS.register("organic_gem_refined",
+            () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
+                    .nutrition(6)      // 3 puntos de hambre (el GDD dice +3)
+                    .saturationMod(0.2f)
+                    .alwaysEat()
+                    .build())));
 
     // -------------------------------------------------------------------------
     // Herramientas y equipamiento

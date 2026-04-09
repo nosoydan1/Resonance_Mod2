@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -181,9 +182,14 @@ public class MobInfectionHandler {
             if (target == null) return;
             mob.getLookControl().setLookAt(target, 30f, 30f);
             mob.getNavigation().moveTo(target, 1.2);
-
             if (mob.distanceTo(target) < 2.0) {
-                mob.doHurtTarget(target);
+                // Verificar si el mob tiene el atributo de daño
+                if (mob.getAttribute(Attributes.ATTACK_DAMAGE) != null) {
+                    mob.doHurtTarget(target);
+                } else {
+                    // Para mobs sin atributo (como ovejas), aplicar daño fijo
+                    target.hurt(mob.damageSources().mobAttack(mob), 2.0F);
+                }
             }
         }
 

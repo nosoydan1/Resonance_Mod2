@@ -91,7 +91,7 @@ public class SplashMineralParticlesItem extends Item {
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         BlockPos center = potion.blockPosition();
-        InfectionData data = InfectionData.get(serverLevel);
+        InfectionData data = InfectionData.get(level);
 
         // Partículas visuales al impactar
         serverLevel.sendParticles(

@@ -1,11 +1,16 @@
 package com.resonance.mod.registry;
 
+import com.resonance.mod.InfectionData;
 import com.resonance.mod.ResonanceMod;
 import com.resonance.mod.block.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -19,6 +24,21 @@ public class ModBlocks {
     public static final RegistryObject<Block> CORRUPTED_MINERAL =
             BLOCKS.register("corrupted_mineral",
                     () -> new CorruptedMineralBlock());
+
+    // Bloques corruptos básicos
+    public static final RegistryObject<Block> CORRUPTED_DIRT = BLOCKS.register("corrupted_dirt",
+            () -> new CorruptedBlock(BlockBehaviour.Properties.copy(Blocks.DIRT).mapColor(MapColor.COLOR_PURPLE)));
+    public static final RegistryObject<Block> CORRUPTED_GRASS = BLOCKS.register("corrupted_grass",
+            () -> new CorruptedGrassBlock(BlockBehaviour.Properties.copy(Blocks.GRASS_BLOCK).mapColor(MapColor.COLOR_PURPLE)));
+    public static final RegistryObject<Block> CORRUPTED_STONE = BLOCKS.register("corrupted_stone",
+            () -> new CorruptedBlock(BlockBehaviour.Properties.copy(Blocks.STONE).mapColor(MapColor.COLOR_PURPLE)));
+    public static final RegistryObject<Block> CORRUPTED_SAND = BLOCKS.register("corrupted_sand",
+            () -> new CorruptedBlock(BlockBehaviour.Properties.copy(Blocks.SAND).mapColor(MapColor.COLOR_PURPLE)));
+    public static final RegistryObject<Block> CORRUPTED_OAK_LOG = BLOCKS.register("corrupted_oak_log",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG).mapColor(MapColor.COLOR_PURPLE)));
+    public static final RegistryObject<Block> CORRUPTED_GRAVEL = BLOCKS.register("corrupted_gravel",
+            () -> new CorruptedBlock(BlockBehaviour.Properties.copy(Blocks.GRAVEL).mapColor(MapColor.COLOR_PURPLE))
+            );
 
     // Mineral ore dentro del bioma
     public static final RegistryObject<Block> CORRUPTED_MINERAL_ORE =
@@ -63,9 +83,7 @@ public class ModBlocks {
                     ));
 
     // Mineral de spike - arbusto con frutos
-    public static final RegistryObject<Block> MINERAL_SPIKE =
-            BLOCKS.register("mineral_spike",
-                    () -> new MineralSpikeBlock());
+    public static final RegistryObject<Block> MINERAL_SPIKE = BLOCKS.register("mineral_spike", MineralSpikeBlock::new);
 
     // Fluidos
     public static final DeferredRegister<Fluid> FLUIDS =

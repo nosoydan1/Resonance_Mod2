@@ -65,6 +65,20 @@ public class Config {
             .comment("Multiplicador de HP por jugador adicional")
             .defineInRange("colossus.hp_multiplayer", 700.0, 100.0, 5000.0);
 
+    // ==================== EXPANSIÓN RADIAL ====================
+    private static final ForgeConfigSpec.IntValue RADIAL_EXPANSION_INTERVAL_SECONDS = BUILDER
+            .comment("Intervalo en segundos entre cada incremento de radio (por defecto 60 = 1 minuto)")
+            .defineInRange("radial_expansion_interval_seconds", 60, 1, 3600);
+
+    private static final ForgeConfigSpec.IntValue RADIAL_INCREMENT_BLOCKS = BUILDER
+            .comment("Número de bloques que aumenta el radio en cada intervalo")
+            .defineInRange("radial_increment_blocks", 1, 1, 10);
+
+    private static final ForgeConfigSpec.IntValue RADIAL_MAX_RADIUS = BUILDER
+            .comment("Radio máximo de expansión (en bloques desde el núcleo)")
+            .defineInRange("radial_max_radius", 300, 10, 1000);
+
+
     // ==================== ESPECIFICACIÓN FINAL ====================
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
@@ -81,6 +95,10 @@ public class Config {
     public static int infectionPhase2Points;
     public static double colossusBaseHP;
     public static double colossusHPMultiplayer;
+
+    public static int radialExpansionIntervalSeconds;
+    public static int radialIncrementBlocks;
+    public static int radialMaxRadius;
 
     private static boolean validateItemName(final Object obj) {
         return obj instanceof String itemName && ForgeRegistries.ITEMS.containsKey(ResourceLocation.tryParse(itemName));
@@ -109,5 +127,10 @@ public class Config {
         // Cargar configuración del coloso
         colossusBaseHP = COLOSSUS_BASE_HP.get();
         colossusHPMultiplayer = COLOSSUS_HP_MULTIPLAYER.get();
+
+        // Cargar configuración de la expansion
+        radialExpansionIntervalSeconds = RADIAL_EXPANSION_INTERVAL_SECONDS.get();
+        radialIncrementBlocks = RADIAL_INCREMENT_BLOCKS.get();
+        radialMaxRadius = RADIAL_MAX_RADIUS.get();
     }
 }

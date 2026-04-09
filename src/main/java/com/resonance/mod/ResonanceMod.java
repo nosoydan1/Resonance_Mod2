@@ -1,15 +1,18 @@
 package com.resonance.mod;
 
 import com.mojang.logging.LogUtils;
+import com.resonance.mod.client.ResonanceHUD;
 import com.resonance.mod.entity.*;
 import com.resonance.mod.network.NetworkHandler;
-import com.resonance.mod.registry.ModBlocks;
-import com.resonance.mod.registry.ModEntities;
-import com.resonance.mod.registry.ModItems;
+import com.resonance.mod.registry.*;
+import com.resonance.mod.registry.ModFeatures;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -30,7 +33,7 @@ import static com.resonance.mod.registry.ModBlocks.FLUIDS;
 public class ResonanceMod {
 
     public static final String MODID = "resonance";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    static final Logger LOGGER = LogUtils.getLogger();
 
     public ResonanceMod(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
@@ -41,11 +44,11 @@ public class ResonanceMod {
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModEntities.ENTITIES.register(modEventBus);
+        // ModBiomes.BIOMES.register(modEventBus);
         FLUIDS.register(modEventBus);
+        ModFeatures.FEATURES.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
-        // TODO: Implementar sistema de capacidades si es necesario
-        // MinecraftForge.EVENT_BUS.register(PlayerResonanceCapabilityHandler.class);
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
         LOGGER.info("Proyecto Resonance iniciando...");
@@ -63,6 +66,7 @@ public class ResonanceMod {
         event.put(ModEntities.ASHEN_KNIGHT.get(), AshenKnightEntity.createAttributes().build());
         event.put(ModEntities.MINERAL_GUARDIAN.get(), MineralGuardianEntity.createAttributes().build());
         event.put(ModEntities.MINERAL_COLOSSUS.get(), MineralColossusEntity.createAttributes().build());
+        event.put(ModEntities.ECHO.get(), EchoEntity.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -72,21 +76,16 @@ public class ResonanceMod {
 
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event) {
-        if (!(event.getEntity() instanceof net.minecraft.world.entity.player.Player player)) return;
+        if (!(event.getEntity() instanceof Player player)) return;
 
         Random random = new Random();
         boolean shouldPetrify = false;
 
-        // Asesinado por Mineral Colossus → 100% petrificación
         if (event.getSource().getEntity() instanceof MineralColossusEntity) {
             shouldPetrify = true;
-        }
-        // Resonancia máxima → petrificación garantizada
-        else if (ResonanceData.getResonance(player) >= 100.0f) {
+        } else if (ResonanceData.getResonance(player) >= 100.0f) {
             shouldPetrify = true;
-        }
-        // Asesinado por otra entidad del mod → 5% probabilidad
-        else if (event.getSource().getEntity() != null) {
+        } else if (event.getSource().getEntity() != null) {
             String namespace = event.getSource().getEntity().getType().toString();
             if (namespace.contains(MODID)) {
                 shouldPetrify = random.nextFloat() < 0.05f;
@@ -98,16 +97,17 @@ public class ResonanceMod {
         }
     }
 
-    private void createPetrifiedStatue(net.minecraft.world.entity.player.Player player) {
+    public static void createPetrifiedStatue(Player player) {
         if (player.level().isClientSide()) return;
-
         BlockPos pos = player.blockPosition();
         player.level().setBlock(pos, Blocks.GOLD_BLOCK.defaultBlockState(), 3);
         player.level().setBlock(pos.above(), Blocks.GOLD_BLOCK.defaultBlockState(), 3);
     }
 
+    // ========== CLASE CLIENTE ==========
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientEvents {
+
         @SubscribeEvent
         public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(ModEntities.CHIPS.get(), ChipsRenderer::new);
@@ -120,17 +120,11 @@ public class ResonanceMod {
             event.registerEntityRenderer(ModEntities.MINERAL_PARTICLES_PROJECTILE.get(),
                     net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
         }
-    }
 
-    // El sistema de capacidades no se usa en esta versión.
-    // Si necesitas capacidades, implementa AttachCapabilitiesEvent y define tus propias clases.
-    /*
-    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-    public static class CapabilityEvents {
         @SubscribeEvent
-        public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-            event.register(PlayerResonanceCapability.class);
+        public static void registerOverlays(RegisterGuiOverlaysEvent event) {
+            System.out.println("DEBUG: Registrando overlay de resonancia");
+            event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "resonance_bar", ResonanceHUD.INSTANCE);
         }
     }
-    */
 }

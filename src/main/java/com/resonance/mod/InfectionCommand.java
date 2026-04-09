@@ -9,6 +9,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,7 +28,7 @@ public class InfectionCommand {
                         .then(Commands.literal("get")
                                 .executes(ctx -> {
                                     CommandSourceStack source = ctx.getSource();
-                                    InfectionData data = InfectionData.get(source.getLevel());
+                                    InfectionData data = InfectionData.get();
                                     source.sendSuccess(() -> Component.literal(
                                             "§5Fase: " + data.getPhase() + " | Puntos: " + data.getPoints()
                                     ), false);
@@ -38,7 +39,8 @@ public class InfectionCommand {
                                         .executes(ctx -> {
                                             int amount = IntegerArgumentType.getInteger(ctx, "amount");
                                             CommandSourceStack source = ctx.getSource();
-                                            InfectionData data = InfectionData.get(source.getLevel());
+                                            Level level = source.getLevel();
+                                            InfectionData data = InfectionData.get(level);
                                             data.addPoints(amount);
                                             NetworkHandler.sendToAllClients(
                                                     new InfectionSyncPacket(data.getPoints(), data.getPhase())
@@ -78,7 +80,8 @@ public class InfectionCommand {
                         .then(Commands.literal("nucleus")
                                 .executes(ctx -> {
                                     CommandSourceStack source = ctx.getSource();
-                                    InfectionData data = InfectionData.get(source.getLevel());
+                                    Level level = source.getLevel();
+                                    InfectionData data = InfectionData.get(level);
                                     BlockPos nucleus = data.getNucleus();
                                     if (nucleus == null) {
                                         source.sendSuccess(() -> Component.literal(

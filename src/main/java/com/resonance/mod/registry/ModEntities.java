@@ -57,11 +57,10 @@ public class ModEntities {
                             .sized(3.0f, 4.0f) // Muy grande
                             .build(new ResourceLocation(ResonanceMod.MODID, "mineral_colossus").toString()));
 
-    public static final RegistryObject<EntityType<EchoEntity>> ECHO =
-            ENTITIES.register("echo",
-                    () -> EntityType.Builder.<EchoEntity>of(EchoEntity::new, MobCategory.MONSTER)
-                            .sized(0.5f, 0.5f)
-                            .build(new ResourceLocation(ResonanceMod.MODID, "echo").toString()));
+    public static final RegistryObject<EntityType<EchoEntity>> ECHO = ENTITIES.register("echo",
+            () -> EntityType.Builder.of(EchoEntity::new, MobCategory.MONSTER)
+                    .sized(0.6f, 0.6f)
+                    .build(new ResourceLocation(ResonanceMod.MODID, "echo").toString()));
 
     public static final RegistryObject<EntityType<MineralParticlesProjectileEntity>> MINERAL_PARTICLES_PROJECTILE =
             ENTITIES.register("mineral_particles_projectile",

@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "end": "resonance:block/corrupted_oak_log_top",
+    "side": "resonance:block/corrupted_oak_log"
+  }
+}

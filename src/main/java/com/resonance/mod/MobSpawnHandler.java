@@ -12,7 +12,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.List;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = ResonanceMod.MODID)

@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "resonance:block/mineral_spike_age1"
+  },
+  "render_type": "cutout"
+}

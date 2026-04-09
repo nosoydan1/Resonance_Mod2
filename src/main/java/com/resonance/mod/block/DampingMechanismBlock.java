@@ -2,6 +2,7 @@ package com.resonance.mod.block;
 
 import com.resonance.mod.ResonanceData;
 import com.resonance.mod.ResonanceMod;
+import com.resonance.mod.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -17,8 +18,8 @@ import net.minecraftforge.fml.common.Mod;
 public class DampingMechanismBlock extends Block {
 
     public static final int DAMPING_RADIUS = 8;
-    private static final float DAMPING_REDUCTION_PER_SECOND = 0.5f;
-    private static final int TICK_INTERVAL = 20;
+    private static final float DAMPING_REDUCTION_PER_SECOND = 2.0f; // 2% por segundo (GDD)
+    private static final int TICK_INTERVAL = 20; // 1 segundo
     private static int tickCounter = 0;
 
     public DampingMechanismBlock() {
@@ -29,6 +30,7 @@ public class DampingMechanismBlock extends Block {
                 .sound(SoundType.METAL));
     }
 
+    // Reducción activa cada segundo para jugadores dentro del radio
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
@@ -46,17 +48,24 @@ public class DampingMechanismBlock extends Block {
         });
     }
 
+    // Detección de si hay un bloque Damping Mechanism en el radio (comparación directa)
     public static boolean hasDampingInArea(Level level, BlockPos center) {
-        for (BlockPos pos : BlockPos.betweenClosed(
-                center.offset(-DAMPING_RADIUS, -DAMPING_RADIUS, -DAMPING_RADIUS),
-                center.offset(DAMPING_RADIUS, DAMPING_RADIUS, DAMPING_RADIUS))) {
-            if (level.getBlockState(pos).getBlock() instanceof DampingMechanismBlock) {
-                return true;
+        Block dampingBlock = ModBlocks.DAMPING_MECHANISM.get();
+        for (int x = -DAMPING_RADIUS; x <= DAMPING_RADIUS; x++) {
+            for (int y = -DAMPING_RADIUS; y <= DAMPING_RADIUS; y++) {
+                for (int z = -DAMPING_RADIUS; z <= DAMPING_RADIUS; z++) {
+                    BlockPos pos = center.offset(x, y, z);
+                    Block block = level.getBlockState(pos).getBlock();
+                    if (block == dampingBlock) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
     }
 
+    // Método auxiliar para ser usado desde ResonanceAreaHandler
     public static boolean playerHasDampingProtection(Level level, BlockPos playerPos) {
         return hasDampingInArea(level, playerPos);
     }

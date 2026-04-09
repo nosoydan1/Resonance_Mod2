@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "top": "resonance:block/corrupted_grass_top",
+    "side": "resonance:block/corrupted_grass_block_side",
+    "bottom": "resonance:block/corrupted_dirt"
+  }
+}

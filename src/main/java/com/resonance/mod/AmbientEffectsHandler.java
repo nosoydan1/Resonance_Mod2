@@ -2,7 +2,6 @@ package com.resonance.mod;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -38,7 +37,7 @@ public class AmbientEffectsHandler {
         event.getServer().getAllLevels().forEach(level -> {
             ServerLevel serverLevel = (ServerLevel) level;
 
-            InfectionData data = InfectionData.get(serverLevel);
+            InfectionData data = InfectionData.get(level);
             int phase = data.getPhase();
             BlockPos nucleus = data.getNucleus();
             if (nucleus == null) return;

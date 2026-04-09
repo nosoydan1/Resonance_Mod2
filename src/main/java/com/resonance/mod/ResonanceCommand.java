@@ -1,9 +1,12 @@
 package com.resonance.mod;
 
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.resonance.mod.network.NetworkHandler;
+import com.resonance.mod.network.ResonanceSyncPacket;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -50,8 +53,15 @@ public class ResonanceCommand {
                                     if (player != null) {
                                         ResonanceData.setResonance(player, 0f);
                                         ResonanceData.markPlayer(player);
-                                        source.sendSuccess(() -> Component.literal(
-                                                "§aResonancia reseteada a 0%"), false);
+                                        source.sendSuccess(() -> Component.literal("§aResonancia reseteada a 0%"), false);
+
+                                        // ENVIAR PAQUETE AL CLIENTE
+                                        if (player instanceof ServerPlayer serverPlayer) {
+                                            NetworkHandler.sendToClient(
+                                                    new ResonanceSyncPacket(ResonanceData.getResonance(player), ResonanceData.isMarked(player)),
+                                                    serverPlayer
+                                            );
+                                        }
                                     }
                                     return 1;
                                 }))

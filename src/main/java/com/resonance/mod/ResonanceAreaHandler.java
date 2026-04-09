@@ -5,6 +5,7 @@ import com.resonance.mod.network.NetworkHandler;
 import com.resonance.mod.network.ResonanceSyncPacket;
 import com.resonance.mod.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -21,8 +22,8 @@ public class ResonanceAreaHandler {
     private static final int CHECK_INTERVAL = 20;
     private static int tickCounter = 0;
     private static final int DETECTION_RADIUS = 10;
-    private static final float RESONANCE_GAIN = 1.0f;
-    private static final float RESONANCE_DECAY = 0.5f;
+    private static final float RESONANCE_GAIN = 1.5f;
+    private static final float RESONANCE_DECAY = 1.0f;
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -39,7 +40,6 @@ public class ResonanceAreaHandler {
         BlockPos playerPos = player.blockPosition();
 
         boolean nearCorruption = isNearCorruptedMineral(level, playerPos);
-        // Si hay un DampingMechanism activo en radio 8, no sumar Resonancia
         boolean dampingActive = DampingMechanismBlock.playerHasDampingProtection(level, playerPos);
 
         if (nearCorruption && !dampingActive) {
@@ -47,7 +47,6 @@ public class ResonanceAreaHandler {
         } else if (!nearCorruption) {
             ResonanceData.reduceResonance(player, RESONANCE_DECAY);
         }
-        // Si nearCorruption && dampingActive: no sube ni baja (el bloque neutraliza la ganancia)
 
         if (player instanceof ServerPlayer serverPlayer) {
             NetworkHandler.sendToClient(
@@ -55,43 +54,45 @@ public class ResonanceAreaHandler {
                     serverPlayer
             );
         }
+
+        // ========== Manejo de petrificación ==========
+        float resonance = ResonanceData.getResonance(player);
+
+        // Si la resonancia alcanzó 100% y no está ya en proceso de petrificación
+        if (resonance >= 100.0f && !ResonanceData.isPetrifying(player)) {
+            ResonanceData.startPetrification(player, 100); // 5 segundos = 100 ticks
+            player.sendSystemMessage(Component.literal("§c¡Estás siendo petrificado! Usa Dissonant Injection para salvarte."));
+        }
+
+        // Si ya está petrificándose, manejar el temporizador
+        if (ResonanceData.isPetrifying(player)) {
+            int ticksLeft = ResonanceData.getPetrifyTicksLeft(player);
+            if (ticksLeft <= 0) {
+                ResonanceMod.createPetrifiedStatue(player);
+                player.kill();
+                ResonanceData.clearPetrification(player);
+            } else {
+                ResonanceData.decrementPetrifyTicks(player);
+                if (ticksLeft % 20 == 0 && ticksLeft <= 100) {
+                    int secondsLeft = ticksLeft / 20;
+                    player.sendSystemMessage(Component.literal("§c¡" + secondsLeft + " segundos antes de petrificarte!"));
+                }
+            }
+        }
     }
 
     /**
-     * Busca si hay mineral corrupto cerca usando BFS (más eficiente que fuerza bruta).
+     * Busca si hay mineral corrupto en la columna vertical hasta 15 bloques hacia abajo.
      */
     private static boolean isNearCorruptedMineral(Level level, BlockPos center) {
         Block corruptedMineral = ModBlocks.CORRUPTED_MINERAL.get();
         Block corruptedMineralOre = ModBlocks.CORRUPTED_MINERAL_ORE.get();
 
-        java.util.Queue<BlockPos> queue = new java.util.LinkedList<>();
-        java.util.Set<BlockPos> visited = new java.util.HashSet<>();
-
-        queue.add(center);
-        visited.add(center);
-
-        while (!queue.isEmpty() && visited.size() < 216) { // 6x6x6 = 216 bloques máx
-            BlockPos current = queue.poll();
-
-            // Limitar la búsqueda al radio DETECTION_RADIUS
-            if (Math.abs(current.getX() - center.getX()) > DETECTION_RADIUS ||
-                    Math.abs(current.getY() - center.getY()) > DETECTION_RADIUS ||
-                    Math.abs(current.getZ() - center.getZ()) > DETECTION_RADIUS) {
-                continue;
-            }
-
-            Block block = level.getBlockState(current).getBlock();
+        for (int dy = 0; dy <= 15; dy++) {
+            BlockPos checkPos = center.below(dy);
+            Block block = level.getBlockState(checkPos).getBlock();
             if (block == corruptedMineral || block == corruptedMineralOre) {
                 return true;
-            }
-
-            // Añadir vecinos (cubo 3x3 alrededor)
-            for (BlockPos neighbor : BlockPos.betweenClosed(
-                    current.offset(-1, -1, -1), current.offset(1, 1, 1))) {
-                if (!visited.contains(neighbor)) {
-                    visited.add(neighbor);
-                    queue.add(neighbor);
-                }
             }
         }
         return false;

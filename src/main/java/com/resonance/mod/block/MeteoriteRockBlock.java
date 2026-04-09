@@ -1,7 +1,6 @@
 package com.resonance.mod.block;
 
 import com.resonance.mod.InfectionData;
-import com.resonance.mod.MeteoriteEventHandler;
 import com.resonance.mod.ResonanceData;
 import com.resonance.mod.ResonanceMod;
 import com.resonance.mod.network.InfectionSyncPacket;
@@ -66,6 +65,8 @@ public class MeteoriteRockBlock extends Block {
             // Generar Núcleo a 5-10 bloques del meteorito en superficie
             BlockPos nucleusPos = findNucleusPosition(level, pos);
             data.setNucleus(nucleusPos);
+            data.setCurrentRadius(10); // radio inicial de 10 bloques
+            data.setLastExpansionTick(level.getServer().getTickCount());
 
             // Colocar bloque de Núcleo
             level.setBlockAndUpdate(nucleusPos,

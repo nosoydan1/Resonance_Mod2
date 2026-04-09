@@ -16,11 +16,15 @@ public class InfectionData extends SavedData {
 
     private int points = 0;
     private int phase = 1;
-    private BlockPos nucleus = null; // Epicentro de la infección
+    private BlockPos nucleus = null;
 
     private static final int[] PHASE_THRESHOLDS = {
             0, 1500, 3225, 6881, 14090, 27478, 56108
     };
+
+    private int currentRadius = 0;      // radio actual (en bloques)
+    private int targetRadius = 0;       // radio al que queremos llegar (se actualiza con cada incremento)
+    private long lastExpansionTick = 0; // tick del servidor cuando se expandió por última vez
 
     public static InfectionData get(Level level) {
         return level.getServer().overworld()
@@ -32,6 +36,10 @@ public class InfectionData extends SavedData {
         InfectionData data = new InfectionData();
         data.points = tag.getInt("Points");
         data.phase = tag.getInt("Phase");
+        data.currentRadius = tag.getInt("CurrentRadius");
+        data.targetRadius = tag.getInt("TargetRadius");
+        data.lastExpansionTick = tag.getLong("LastExpansionTick");
+
         if (tag.contains("NucleusX")) {
             data.nucleus = new BlockPos(
                     tag.getInt("NucleusX"),
@@ -42,10 +50,17 @@ public class InfectionData extends SavedData {
         return data;
     }
 
+    public static InfectionData get() {
+        return null;
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag) {
         tag.putInt("Points", points);
         tag.putInt("Phase", phase);
+        tag.putInt("CurrentRadius", currentRadius);
+        tag.putInt("TargetRadius", targetRadius);
+        tag.putLong("LastExpansionTick", lastExpansionTick);
         if (nucleus != null) {
             tag.putInt("NucleusX", nucleus.getX());
             tag.putInt("NucleusY", nucleus.getY());
@@ -87,4 +102,22 @@ public class InfectionData extends SavedData {
             default -> 1;
         };
     }
+
+    public boolean tryExpandRadius(long currentTick, int intervalSeconds, int incrementBlocks, int maxRadius) {
+        long ticksNeeded = intervalSeconds * 20L;
+        if (currentTick - lastExpansionTick >= ticksNeeded && currentRadius < maxRadius) {
+            int newRadius = Math.min(currentRadius + incrementBlocks, maxRadius);
+            setCurrentRadius(newRadius);
+            setLastExpansionTick(currentTick);
+            return true;
+        }
+        return false;
+    }
+
+    public int getCurrentRadius() { return currentRadius; }
+    public void setCurrentRadius(int radius) { this.currentRadius = radius; setDirty(); }
+    public int getTargetRadius() { return targetRadius; }
+    public void setTargetRadius(int radius) { this.targetRadius = radius; setDirty(); }
+    public long getLastExpansionTick() { return lastExpansionTick; }
+    public void setLastExpansionTick(long tick) { this.lastExpansionTick = tick; setDirty(); }
 }
