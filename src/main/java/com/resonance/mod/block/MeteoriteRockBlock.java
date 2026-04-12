@@ -1,5 +1,6 @@
 package com.resonance.mod.block;
 
+import com.resonance.mod.InfectionConversion;
 import com.resonance.mod.InfectionData;
 import com.resonance.mod.ResonanceData;
 import com.resonance.mod.ResonanceMod;
@@ -71,6 +72,8 @@ public class MeteoriteRockBlock extends Block {
             // Colocar bloque de Núcleo
             level.setBlockAndUpdate(nucleusPos,
                     ModBlocks.NUCLEUS.get().defaultBlockState());
+            data.setCurrentRadius(10); // radio inicial de 10 bloques
+            data.setLastExpansionTick(level.getServer().getTickCount());
 
             // Generar radio pequeño de Corrupted Mineral alrededor del Núcleo
             generateInitialInfection((ServerLevel) level, nucleusPos, 3);
@@ -120,11 +123,18 @@ public class MeteoriteRockBlock extends Block {
                     if (distance <= radius) {
                         BlockPos pos = center.offset(x, y, z);
                         BlockState current = level.getBlockState(pos);
-                        if (!current.isAir()
-                                && current.getBlock() != net.minecraft.world.level.block.Blocks.BEDROCK
-                                && current.getBlock() != ModBlocks.NUCLEUS.get()) {
-                            level.setBlockAndUpdate(pos,
-                                    ModBlocks.CORRUPTED_MINERAL.get().defaultBlockState());
+                        Block currentBlock = current.getBlock();
+                        // No infectar aire, bedrock ni el núcleo
+                        if (current.isAir() || currentBlock == net.minecraft.world.level.block.Blocks.BEDROCK || currentBlock == ModBlocks.NUCLEUS.get()) {
+                            continue;
+                        }
+                        // Obtener la versión corrupta específica
+                        Block corruptedBlock = InfectionConversion.getCorruptedVersion(currentBlock);
+                        if (corruptedBlock != null) {
+                            level.setBlockAndUpdate(pos, corruptedBlock.defaultBlockState());
+                        } else {
+                            // Si no hay versión específica, convertir a Corrupted Mineral (fallback)
+                            level.setBlockAndUpdate(pos, ModBlocks.CORRUPTED_MINERAL.get().defaultBlockState());
                         }
                     }
                 }

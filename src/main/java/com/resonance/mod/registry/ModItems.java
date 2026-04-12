@@ -23,6 +23,9 @@ public class ModItems {
     // -------------------------------------------------------------------------
     // Items de bloques
     // -------------------------------------------------------------------------
+//    public static final RegistryObject<Item> MINERALIZED_WATER_BLOCK = ITEMS.register("mineralized_water_block",
+//            () -> new BlockItem(ModBlocks.MINERALIZED_WATER_BLOCK.get(), new Item.Properties()));
+
     public static final RegistryObject<Item> CORRUPTED_MINERAL = ITEMS.register("corrupted_mineral",
             () -> new BlockItem(ModBlocks.CORRUPTED_MINERAL.get(), new Item.Properties()));
 

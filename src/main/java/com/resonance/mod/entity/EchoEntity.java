@@ -18,6 +18,7 @@ public class EchoEntity extends Monster {
 
     public EchoEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
+        this.setPersistenceRequired();
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -89,9 +89,9 @@ public class ModBlocks {
     public static final DeferredRegister<Fluid> FLUIDS =
             DeferredRegister.create(ForgeRegistries.FLUIDS, ResonanceMod.MODID);
 
-    public static final RegistryObject<FlowingFluid> MINERALIZED_WATER = FLUIDS.register("mineralized_water", MineralizedWaterFluid::new);
-    public static final RegistryObject<FlowingFluid> MINERALIZED_WATER_FLOWING = FLUIDS.register("mineralized_water_flowing", MineralizedWaterFluid::new);
-    public static final RegistryObject<LiquidBlock> MINERALIZED_WATER_BLOCK = BLOCKS.register("mineralized_water_block",
-            () -> new MineralizedWaterBlock(MINERALIZED_WATER.get()));
+//    public static final RegistryObject<FlowingFluid> MINERALIZED_WATER = FLUIDS.register("mineralized_water", MineralizedWaterFluid::new);
+//    public static final RegistryObject<FlowingFluid> MINERALIZED_WATER_FLOWING = FLUIDS.register("mineralized_water_flowing", MineralizedWaterFluid::new);
+//    public static final RegistryObject<LiquidBlock> MINERALIZED_WATER_BLOCK = BLOCKS.register("mineralized_water_block",
+//            () -> new MineralizedWaterBlock(MINERALIZED_WATER.get()));
 
 }

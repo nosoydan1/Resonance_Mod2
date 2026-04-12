@@ -33,6 +33,7 @@ public class ChipsEntity extends PathfinderMob {
 
     public ChipsEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
+        this.setPersistenceRequired();
     }
 
     public static AttributeSupplier.Builder createAttributes() {

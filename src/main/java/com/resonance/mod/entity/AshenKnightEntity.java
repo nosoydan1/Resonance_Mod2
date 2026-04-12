@@ -21,6 +21,7 @@ public class AshenKnightEntity extends PathfinderMob {
     public AshenKnightEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
         this.setNoGravity(true); // vuela
+        this.setPersistenceRequired();
     }
 
     public static AttributeSupplier.Builder createAttributes() {

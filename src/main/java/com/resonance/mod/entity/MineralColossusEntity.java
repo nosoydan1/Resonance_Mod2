@@ -30,6 +30,7 @@ public class MineralColossusEntity extends Monster {
     public MineralColossusEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
         this.setCanPickUpLoot(false);
+        this.setPersistenceRequired();
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -30,6 +30,7 @@ public class MineralGuardianEntity extends PathfinderMob implements RangedAttack
 
     public MineralGuardianEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
+        this.setPersistenceRequired();
     }
 
     public static AttributeSupplier.Builder createAttributes() {

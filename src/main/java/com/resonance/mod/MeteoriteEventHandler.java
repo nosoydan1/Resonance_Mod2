@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -23,6 +24,7 @@ public class MeteoriteEventHandler {
 
     private static final Random RANDOM = new Random();
     private static final String TAG_METEOR_SPAWNED = "Resonance_MeteorSpawned";
+    private static final String TAG_ALTAR_SPAWNED = "Resonance_AltarSpawned";
     private static final int METEOR_DELAY = 20 * 60; // 1 minuto
     private static int tickCounter = 0;
     private static boolean meteorScheduled = false;
@@ -42,6 +44,45 @@ public class MeteoriteEventHandler {
         player.sendSystemMessage(Component.literal(
                 "§8[Un objeto extraño se aproxima desde el cielo...]"
         ));
+    }
+
+    @SubscribeEvent
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel level)) return;
+        if (!(event.getPlayer() instanceof ServerPlayer player)) return;
+
+        // Verificar si rompió METEORITE_ROCK
+        if (event.getState().getBlock() != ModBlocks.METEORITE_ROCK.get()) return;
+
+        // Verificar si ya se generó el altar
+        if (player.getPersistentData().getBoolean(TAG_ALTAR_SPAWNED)) return;
+
+        // Generar altar a ~200 bloques de distancia
+        BlockPos meteorPos = event.getPos();
+        double angle = RANDOM.nextDouble() * Math.PI * 2;
+        int distance = 180 + RANDOM.nextInt(40); // 180-220 bloques
+
+        int offsetX = (int)(Math.cos(angle) * distance);
+        int offsetZ = (int)(Math.sin(angle) * distance);
+
+        BlockPos altarSurface = level.getHeightmapPos(
+                Heightmap.Types.WORLD_SURFACE,
+                meteorPos.offset(offsetX, 0, offsetZ)
+        );
+
+        // Generar altar
+        BlockPos nucleusPos = NucleusAltarGenerator.generate(level, altarSurface);
+
+        // Marcar altar como generado
+        player.getPersistentData().putBoolean(TAG_ALTAR_SPAWNED, true);
+
+        // Mensaje al jugador
+        player.sendSystemMessage(Component.literal(
+                "§5[Algo antiguo ha despertado en la distancia...]"
+        ));
+
+        ResonanceMod.LOGGER.info("[Resonance] Altar generado en {} tras romper meteorito en {}",
+                nucleusPos, meteorPos);
     }
 
     @SubscribeEvent
@@ -131,25 +172,25 @@ public class MeteoriteEventHandler {
 
                         // Destruir árboles, hojas, vegetación y tierra blanda
                         if (current.getBlock() == Blocks.OAK_LOG ||
-                            current.getBlock() == Blocks.OAK_LEAVES ||
-                            current.getBlock() == Blocks.BIRCH_LOG ||
-                            current.getBlock() == Blocks.BIRCH_LEAVES ||
-                            current.getBlock() == Blocks.SPRUCE_LOG ||
-                            current.getBlock() == Blocks.SPRUCE_LEAVES ||
-                            current.getBlock() == Blocks.DARK_OAK_LOG ||
-                            current.getBlock() == Blocks.DARK_OAK_LEAVES ||
-                            current.getBlock() == Blocks.JUNGLE_LOG ||
-                            current.getBlock() == Blocks.JUNGLE_LEAVES ||
-                            current.getBlock() == Blocks.ACACIA_LOG ||
-                            current.getBlock() == Blocks.ACACIA_LEAVES ||
-                            current.getBlock() == Blocks.MANGROVE_LOG ||
-                            current.getBlock() == Blocks.MANGROVE_LEAVES ||
-                            current.getBlock() == Blocks.GRASS ||
-                            current.getBlock() == Blocks.TALL_GRASS ||
-                            current.getBlock() == Blocks.FERN ||
-                            current.getBlock() == Blocks.LARGE_FERN ||
-                            current.getBlock() == Blocks.DIRT ||
-                            current.getBlock() == Blocks.GRASS_BLOCK) {
+                                current.getBlock() == Blocks.OAK_LEAVES ||
+                                current.getBlock() == Blocks.BIRCH_LOG ||
+                                current.getBlock() == Blocks.BIRCH_LEAVES ||
+                                current.getBlock() == Blocks.SPRUCE_LOG ||
+                                current.getBlock() == Blocks.SPRUCE_LEAVES ||
+                                current.getBlock() == Blocks.DARK_OAK_LOG ||
+                                current.getBlock() == Blocks.DARK_OAK_LEAVES ||
+                                current.getBlock() == Blocks.JUNGLE_LOG ||
+                                current.getBlock() == Blocks.JUNGLE_LEAVES ||
+                                current.getBlock() == Blocks.ACACIA_LOG ||
+                                current.getBlock() == Blocks.ACACIA_LEAVES ||
+                                current.getBlock() == Blocks.MANGROVE_LOG ||
+                                current.getBlock() == Blocks.MANGROVE_LEAVES ||
+                                current.getBlock() == Blocks.GRASS ||
+                                current.getBlock() == Blocks.TALL_GRASS ||
+                                current.getBlock() == Blocks.FERN ||
+                                current.getBlock() == Blocks.LARGE_FERN ||
+                                current.getBlock() == Blocks.DIRT ||
+                                current.getBlock() == Blocks.GRASS_BLOCK) {
 
                             level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 
@@ -183,13 +224,13 @@ public class MeteoriteEventHandler {
             if (level.getBlockState(debrisPos).isAir()) {
                 // Crear fragmento volador
                 FallingBlockEntity debris = FallingBlockEntity.fall(
-                    level, debrisPos,
-                    RANDOM.nextBoolean() ? Blocks.DIRT.defaultBlockState() : Blocks.STONE.defaultBlockState()
+                        level, debrisPos,
+                        RANDOM.nextBoolean() ? Blocks.DIRT.defaultBlockState() : Blocks.STONE.defaultBlockState()
                 );
                 debris.setDeltaMovement(
-                    (RANDOM.nextFloat() - 0.5f) * 0.8,
-                    0.3 + RANDOM.nextFloat() * 0.4,
-                    (RANDOM.nextFloat() - 0.5f) * 0.8
+                        (RANDOM.nextFloat() - 0.5f) * 0.8,
+                        0.3 + RANDOM.nextFloat() * 0.4,
+                        (RANDOM.nextFloat() - 0.5f) * 0.8
                 );
                 level.addFreshEntity(debris);
             }
@@ -212,11 +253,11 @@ public class MeteoriteEventHandler {
         // Partículas de polvo y debris
         for (int i = 0; i < 50; i++) {
             level.sendParticles(
-                net.minecraft.core.particles.ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                center.getX() + (RANDOM.nextFloat() - 0.5) * 10,
-                center.getY() + RANDOM.nextFloat() * 3,
-                center.getZ() + (RANDOM.nextFloat() - 0.5) * 10,
-                1, 0, 0.1, 0, 0.01
+                    net.minecraft.core.particles.ParticleTypes.CAMPFIRE_COSY_SMOKE,
+                    center.getX() + (RANDOM.nextFloat() - 0.5) * 10,
+                    center.getY() + RANDOM.nextFloat() * 3,
+                    center.getZ() + (RANDOM.nextFloat() - 0.5) * 10,
+                    1, 0, 0.1, 0, 0.01
             );
         }
 
@@ -235,18 +276,18 @@ public class MeteoriteEventHandler {
     private static void spawnDebris(ServerLevel level, BlockPos pos, BlockState originalBlock) {
         // Crear entidad de item que representa debris
         net.minecraft.world.entity.item.ItemEntity debris = new net.minecraft.world.entity.item.ItemEntity(
-            level,
-            pos.getX() + 0.5,
-            pos.getY() + 0.5,
-            pos.getZ() + 0.5,
-            new net.minecraft.world.item.ItemStack(originalBlock.getBlock().asItem())
+                level,
+                pos.getX() + 0.5,
+                pos.getY() + 0.5,
+                pos.getZ() + 0.5,
+                new net.minecraft.world.item.ItemStack(originalBlock.getBlock().asItem())
         );
 
         // Dar movimiento aleatorio
         debris.setDeltaMovement(
-            (RANDOM.nextFloat() - 0.5f) * 0.6,
-            0.2 + RANDOM.nextFloat() * 0.3,
-            (RANDOM.nextFloat() - 0.5f) * 0.6
+                (RANDOM.nextFloat() - 0.5f) * 0.6,
+                0.2 + RANDOM.nextFloat() * 0.3,
+                (RANDOM.nextFloat() - 0.5f) * 0.6
         );
 
         // Hacer que no dure mucho
@@ -315,4 +356,3 @@ public class MeteoriteEventHandler {
         }
     }
 }
-

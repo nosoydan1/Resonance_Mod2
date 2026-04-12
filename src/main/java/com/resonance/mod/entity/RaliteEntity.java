@@ -26,7 +26,9 @@ public class RaliteEntity extends PathfinderMob {
 
     public RaliteEntity(EntityType<? extends PathfinderMob> type, Level level) {
         super(type, level);
+        this.setPersistenceRequired();
     }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
